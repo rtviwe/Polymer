@@ -3,6 +3,7 @@ import traceback
 from ctypes import *
 
 
+# TODO ???
 class Lammps:
 
     def __init__(self, name="", cmdargs=None):

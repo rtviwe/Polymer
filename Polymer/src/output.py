@@ -46,6 +46,7 @@ run             %s
     in_file.close()
 
 
+# Рисует график и сохраняет в chain.png
 def plot_chain_with_args(args):
     (bead_number, C_in_tubes, C_coord_x, C_coord_y, C_coord_z) = args
     color = ['red', 'green', 'blue', 'yellow', 'black', 'pink']
@@ -60,6 +61,7 @@ def plot_chain_with_args(args):
     fig.savefig('chain.png', bbox_inches='tight')
 
 
+# Записывает в файл в формате pdb (наверное неправильно)
 def write_in_file_with_args(args):
     (chain_numb, bead_number, C_in_tubes, C_coord_x, C_coord_y, C_coord_z) = args
 

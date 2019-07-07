@@ -2,45 +2,50 @@
 class Input:
 
     def __init__(self):
-        self.name = 'default task'
+        self.name = 'Polymer'
+
+        # Размеры коробки
         self.box_x = 200
         self.box_y = 200
         self.box_z = 200
+
+        # TODO ???
         self.inclusion_type = 'nanotube'
         self.inclusion_size = 100
         self.inclusion_number = 10
         self.inclusion_chain_length = 5000
         self.density = 0.8
 
+        # TODO ???
         self.step_number = 1000000
         self.step = 0.005
         self.temp = 300
         self.pres = 1
         self.cfg_step = 10000
 
+        # TODO ???
         self.def_step_number = 1000000
         self.def_x = 1
         self.def_y = 1
         self.def_z = 1
 
-        # TODO not sure
-        self.bead_number = 5
-        self.chain_number = 2
-        self.chain_length = 2
-        self.r = 10
-        self.tube_coefficient = 0.75
+        self.bead_number = 2000  # максимум молекул в цепочке
+        self.chain_number = 2  # количество цепочек
+
+        self.r = 1  # TODO ???
+        self.tube_coefficient = 0.75  # TODO ???
 
 
 # Импоритуем эту переменную всюду, где нам нужны входные данные
 pmpi_input = Input()
-default_flag = 0
+isDefault = False
 
 # Здесь она генерится либо по умолчанию, либо через консоль
 while True:
     key = input('\n>>>')
     if key == 'start generation default' or key == 'd':
         print('default values')
-        default_flag = 1
+        isDefault = True
         break
     if key == 'start generation':
         print('Enter parameters:')
@@ -48,7 +53,7 @@ while True:
     else:
         print('Unknown Command')
 
-while True * (not default_flag):
+while not isDefault:
     key = input('\nJob name =')
     try:
         pmpi_input.name = key
@@ -57,7 +62,7 @@ while True * (not default_flag):
     except:
         print('wrong data type')
 
-while True * (not default_flag):
+while not isDefault:
     key = input('\nCell size (x y z) =')
     try:
         pmpi_input.box_x = float(key.split()[0])
@@ -68,7 +73,7 @@ while True * (not default_flag):
     except:
         print('wrong data type')
 
-while True * (not default_flag):
+while not isDefault:
     key = input('\nInclusion type =')
     try:
         pmpi_input.inclusion_type = key
@@ -77,7 +82,7 @@ while True * (not default_flag):
     except:
         print('wrong data type')
 
-while True * (not default_flag):
+while not isDefault:
     key = input('\nInclusion size =')
     try:
         pmpi_input.inclusion_size = float(key)
@@ -86,7 +91,7 @@ while True * (not default_flag):
     except:
         print('wrong data type')
 
-while True * (not default_flag):
+while not isDefault:
     key = input('\nNumber of inclusions =')
     try:
         pmpi_input.inclusion_number = int(key)
@@ -95,7 +100,7 @@ while True * (not default_flag):
     except:
         print('wrong data type')
 
-while True * (not default_flag):
+while not isDefault:
     key = input('\nPolymer chain length =')
     try:
         pmpi_input.inclusion_chain_length = int(key)
@@ -104,7 +109,7 @@ while True * (not default_flag):
     except:
         print('wrong data type')
 
-while True * (not default_flag):
+while not isDefault:
     key = input('\nDensity =')
     try:
         pmpi_input.density = float(key)
@@ -115,12 +120,13 @@ while True * (not default_flag):
 
 print('\n\nGenerated file "%s.data"' % pmpi_input.name)
 
-default_relax_flag = 0
+isDefault = False
+
 while True:
     key = input('\n>>>')
     if key == 'start relaxation default' or key == 'd':
         print('default values')
-        default_relax_flag = 1
+        isDefault = True
         break
     if key == 'start relaxation':
         print('Enter parameters:')
@@ -128,7 +134,7 @@ while True:
     else:
         print('Unknown Command')
 
-while True * (not default_relax_flag):
+while not isDefault:
     key = input('\nNumber of steps =')
     try:
         pmpi_input.step_numb = int(key)
@@ -137,7 +143,7 @@ while True * (not default_relax_flag):
     except:
         print('wrong data type')
 
-while True * (not default_relax_flag):
+while not isDefault:
     key = input('\nStep (ps) =')
     try:
         pmpi_input.step = float(key)
@@ -146,7 +152,7 @@ while True * (not default_relax_flag):
     except:
         print('wrong data type')
 
-while True * (not default_relax_flag):
+while not isDefault:
     key = input('\nTemperature =')
     try:
         pmpi_input.temp = float(key)
@@ -155,7 +161,7 @@ while True * (not default_relax_flag):
     except:
         print('wrong data type')
 
-while True * (not default_relax_flag):
+while not isDefault:
     key = input('\nPressure (bar) =')
     try:
         pmpi_input.pres = float(key)
@@ -164,7 +170,7 @@ while True * (not default_relax_flag):
     except:
         print('wrong data type')
 
-while True * (not default_relax_flag):
+while not isDefault:
     key = input('\nGenerate cfg every X steps =')
     try:
         pmpi_input.cfg_step = int(key)
@@ -175,12 +181,13 @@ while True * (not default_relax_flag):
 
 print('\n\nGenerated in-file "in_relax.%s"' % pmpi_input.name)
 
-default_def_flag = 0
+isDefault = False
+
 while True:
     key = input('\n>>>')
     if key == 'start deformation default' or key == 'd':
         print('default values')
-        default_def_flag = 1
+        isDefault = True
         break
     if key == 'start deformation':
         print('Enter parameters:')
@@ -188,7 +195,7 @@ while True:
     else:
         print('Unknown Command')
 
-while True * (not default_def_flag):
+while not isDefault:
     key = input('\nNumber of steps (deformation) =')
     try:
         pmpi_input.def_step_number = int(key)
@@ -197,7 +204,7 @@ while True * (not default_def_flag):
     except:
         print('wrong data type')
 
-while True * (not default_def_flag):
+while not isDefault:
     key = input('\nDeformation (dx dy dz) =')
     try:
         pmpi_input.def_x = float(key.split()[0])
