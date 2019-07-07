@@ -1,14 +1,4 @@
-import os
-import sys
-
-MPNCS_ver = '1.0'
-Python_ver = sys.version[:6]
-LAMMPS_version = s = os.popen('echo "quit" | ./LAMMPS/lmp_polymer').read().replace("\n", "")
-print('Multiscale Polymer NanoComposite Simusator v %s' % MPNCS_ver)
-print('Python v %s' % Python_ver)
-print('Lammps library package %s' % LAMMPS_version)
-
-
+# Это все наши входные данные
 class Input:
 
     def __init__(self):
@@ -16,27 +6,36 @@ class Input:
         self.box_x = 200
         self.box_y = 200
         self.box_z = 200
-        self.inc_type = 'nanotube'
-        self.inc_size = 100
-        self.inc_numb = 10
-        self.inc_ch_length = 5000
+        self.inclusion_type = 'nanotube'
+        self.inclusion_size = 100
+        self.inclusion_number = 10
+        self.inclusion_chain_length = 5000
         self.density = 0.8
 
-        self.step_numb = 1000000
+        self.step_number = 1000000
         self.step = 0.005
         self.temp = 300
         self.pres = 1
         self.cfg_step = 10000
 
-        self.def_step_numb = 1000000
+        self.def_step_number = 1000000
         self.def_x = 1
         self.def_y = 1
         self.def_z = 1
 
+        # TODO not sure
+        self.bead_number = 5
+        self.chain_number = 2
+        self.chain_length = 2
+        self.r = 10
+        self.tube_coefficient = 0.75
 
+
+# Импоритуем эту переменную всюду, где нам нужны входные данные
 pmpi_input = Input()
 default_flag = 0
 
+# Здесь она генерится либо по умолчанию, либо через консоль
 while True:
     key = input('\n>>>')
     if key == 'start generation default':
@@ -52,8 +51,8 @@ while True:
 while True * (not default_flag):
     key = input('\nJob name =')
     try:
-        Input.name = key
-        print('Job name = %s' % Input.name)
+        pmpi_input.name = key
+        print('Job name = %s' % pmpi_input.name)
         break
     except:
         print('wrong data type')
@@ -61,10 +60,10 @@ while True * (not default_flag):
 while True * (not default_flag):
     key = input('\nCell size (x y z) =')
     try:
-        Input.box_x = float(key.split()[0])
-        Input.box_y = float(key.split()[1])
-        Input.box_z = float(key.split()[2])
-        print('%s x %s x %s Angstrom' % (str(Input.box_x), str(Input.box_y), str(Input.box_z)))
+        pmpi_input.box_x = float(key.split()[0])
+        pmpi_input.box_y = float(key.split()[1])
+        pmpi_input.box_z = float(key.split()[2])
+        print('%s x %s x %s Angstrom' % (str(pmpi_input.box_x), str(pmpi_input.box_y), str(pmpi_input.box_z)))
         break
     except:
         print('wrong data type')
@@ -72,8 +71,8 @@ while True * (not default_flag):
 while True * (not default_flag):
     key = input('\nInclusion type =')
     try:
-        Input.inc_type = key
-        print('Inclusion type: %s' % Input.inc_type)
+        pmpi_input.inclusion_type = key
+        print('Inclusion type: %s' % pmpi_input.inclusion_type)
         break
     except:
         print('wrong data type')
@@ -81,8 +80,8 @@ while True * (not default_flag):
 while True * (not default_flag):
     key = input('\nInclusion size =')
     try:
-        Input.inc_size = float(key)
-        print('Inclusion size: %s' % str(Input.inc_size))
+        pmpi_input.inclusion_size = float(key)
+        print('Inclusion size: %s' % str(pmpi_input.inclusion_size))
         break
     except:
         print('wrong data type')
@@ -90,8 +89,8 @@ while True * (not default_flag):
 while True * (not default_flag):
     key = input('\nNumber of inclusions =')
     try:
-        Input.inc_numb = int(key)
-        print('Number of inclusions: %s' % str(Input.inc_numb))
+        pmpi_input.inclusion_number = int(key)
+        print('Number of inclusions: %s' % str(pmpi_input.inclusion_number))
         break
     except:
         print('wrong data type')
@@ -99,8 +98,8 @@ while True * (not default_flag):
 while True * (not default_flag):
     key = input('\nPolymer chain length =')
     try:
-        Input.inc_ch_length = int(key)
-        print('Polymer chain length: %s' % str(Input.inc_ch_length))
+        pmpi_input.inclusion_chain_length = int(key)
+        print('Polymer chain length: %s' % str(pmpi_input.inclusion_chain_length))
         break
     except:
         print('wrong data type')
@@ -108,13 +107,13 @@ while True * (not default_flag):
 while True * (not default_flag):
     key = input('\nDensity =')
     try:
-        Input.density = float(key)
-        print('Density: %s g/cm3' % str(Input.density))
+        pmpi_input.density = float(key)
+        print('Density: %s g/cm3' % str(pmpi_input.density))
         break
     except:
         print('wrong data type')
 
-print('\n\nGenerated file "%s.data"' % Input.name)
+print('\n\nGenerated file "%s.data"' % pmpi_input.name)
 
 default_relax_flag = 0
 while True:
@@ -132,8 +131,8 @@ while True:
 while True * (not default_relax_flag):
     key = input('\nNumber of steps =')
     try:
-        Input.step_numb = int(key)
-        print('Number of steps: %s' % str(Input.step_numb))
+        pmpi_input.step_numb = int(key)
+        print('Number of steps: %s' % str(pmpi_input.step_numb))
         break
     except:
         print('wrong data type')
@@ -141,8 +140,8 @@ while True * (not default_relax_flag):
 while True * (not default_relax_flag):
     key = input('\nStep (ps) =')
     try:
-        Input.step = float(key)
-        print('Step:%s ps' % str(Input.step))
+        pmpi_input.step = float(key)
+        print('Step:%s ps' % str(pmpi_input.step))
         break
     except:
         print('wrong data type')
@@ -150,8 +149,8 @@ while True * (not default_relax_flag):
 while True * (not default_relax_flag):
     key = input('\nTemperature =')
     try:
-        Input.temp = float(key)
-        print('Temperature: %s' % str(Input.temp))
+        pmpi_input.temp = float(key)
+        print('Temperature: %s' % str(pmpi_input.temp))
         break
     except:
         print('wrong data type')
@@ -159,8 +158,8 @@ while True * (not default_relax_flag):
 while True * (not default_relax_flag):
     key = input('\nPressure (bar) =')
     try:
-        Input.pres = float(key)
-        print('Pressure: %s bar' % str(Input.pres))
+        pmpi_input.pres = float(key)
+        print('Pressure: %s bar' % str(pmpi_input.pres))
         break
     except:
         print('wrong data type')
@@ -168,13 +167,13 @@ while True * (not default_relax_flag):
 while True * (not default_relax_flag):
     key = input('\nGenerate cfg every X steps =')
     try:
-        Input.cfg_step = int(key)
-        print('Generate cfg every %s steps' % str(Input.cfg_step))
+        pmpi_input.cfg_step = int(key)
+        print('Generate cfg every %s steps' % str(pmpi_input.cfg_step))
         break
     except:
         print('wrong data type')
 
-print('\n\nGenerated in-file "in_relax.%s"' % Input.name)
+print('\n\nGenerated in-file "in_relax.%s"' % pmpi_input.name)
 
 default_def_flag = 0
 while True:
@@ -192,8 +191,8 @@ while True:
 while True * (not default_def_flag):
     key = input('\nNumber of steps (deformation) =')
     try:
-        Input.def_step_numb = int(key)
-        print('Number of steps: %s' % str(Input.def_step_numb))
+        pmpi_input.def_step_number = int(key)
+        print('Number of steps: %s' % str(pmpi_input.def_step_number))
         break
     except:
         print('wrong data type')
@@ -201,12 +200,13 @@ while True * (not default_def_flag):
 while True * (not default_def_flag):
     key = input('\nDeformation (dx dy dz) =')
     try:
-        Input.def_x = float(key.split()[0])
-        Input.def_y = float(key.split()[1])
-        Input.def_z = float(key.split()[2])
-        print('Deformation %s x %s x %s Angstrom' % (str(Input.def_x), str(Input.def_y), str(Input.def_z)))
+        pmpi_input.def_x = float(key.split()[0])
+        pmpi_input.def_y = float(key.split()[1])
+        pmpi_input.def_z = float(key.split()[2])
+        print(
+            'Deformation %s x %s x %s Angstrom' % (str(pmpi_input.def_x), str(pmpi_input.def_y), str(pmpi_input.def_z)))
         break
     except:
         print('wrong data type')
 
-print('\n\nGenerated in-file "in_deform.%s"' % Input.name)
+print('\n\nGenerated in-file "in_deform.%s"' % pmpi_input.name)

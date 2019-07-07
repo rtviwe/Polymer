@@ -4,15 +4,14 @@ import time
 
 import math
 
-from Polymer.src.PMPI import pmpi_input
+from Polymer.src.input import pmpi_input
 
-# Global variables
+# Какие-то глобальные переменные
 vect = 1.557  # C-C bond length
 dop_radius = 1
 vect_ch = 0.8  # C-H bond length
 time_to_wait = 3  # lag time (seconds)
 
-# Technical containers
 c_coord_x = []
 c_coord_y = []
 c_coord_z = []
@@ -22,24 +21,29 @@ h_coord_y = []
 h_coord_z = []
 
 # TODO not sure
-c_in_tubes = 0
 dist_btw_walls = 10
+c_in_tubes = len(c_coord_x)
 
 
-# Polyethilene generation
+# Цепочка полиэтилена
 class Chain:
 
     def __init__(self, coord):
-        phi = random.random()
-        theta = random.random()
-
-        self.z = vect * math.cos(2 * math.pi * theta)
-        self.y = vect * math.sin(2 * math.pi * theta) * math.cos(2 * math.pi * phi)
-        self.x = vect * math.sin(2 * math.pi * theta) * math.sin(2 * math.pi * phi)
-
         c_coord_x.extend([coord[0], coord[0] + vect / math.sqrt(2)])
         c_coord_y.extend([coord[1], coord[1] + vect / math.sqrt(2)])
         c_coord_z.extend([coord[2], coord[2]])
+
+        self.z = 0
+        self.y = 0
+        self.x = 0
+
+    def generate(self):
+        phi = random.random()
+        theta = random.random()
+
+        self.x = vect * math.sin(2 * math.pi * theta) * math.sin(2 * math.pi * phi)
+        self.y = vect * math.sin(2 * math.pi * theta) * math.cos(2 * math.pi * phi)
+        self.z = vect * math.cos(2 * math.pi * theta)
 
     def check_angle(self):
         x_beg = c_coord_x[-1]
@@ -84,7 +88,8 @@ class Chain:
     def add_hydr(self):
         for i2 in range(len(c_coord_x) - c_in_tubes):
             i = i2 + c_in_tubes
-            if i2 % (bead_number + 2) != 0 and i2 % (bead_number + 2) != (bead_number + 2 - 1):
+            if i2 % (pmpi_input.bead_number + 2) != 0 and i2 % (pmpi_input.bead_number + 2) != \
+                    (pmpi_input.bead_number + 2 - 1):
                 a_x = (c_coord_x[i + 1] - c_coord_x[i]) / vect
                 a_y = (c_coord_y[i + 1] - c_coord_y[i]) / vect
                 a_z = (c_coord_z[i + 1] - c_coord_z[i]) / vect
@@ -109,9 +114,8 @@ class Chain:
 
 
 def write_in_file():
-    f = open(os.getcwd() + str(bead_number) + '_' + str(chain_numb) + '.data', 'w')
+    f = open(os.getcwd() + str(pmpi_input.bead_number) + '_' + str(pmpi_input.chain_number) + '.data', 'w')
 
-    # Generate head of file
     f.write('\n' + str(len(c_coord_x) + len(h_coord_x)) + ' atoms' + '\n')
     f.write('2 atom types' + '\n' + '\n')
     f.write(str(-pmpi_input.box_x / 2 - 1) + ' ' + str(pmpi_input.box_x / 2 + 1) + ' xlo xhi' + '\n')
@@ -125,73 +129,76 @@ def write_in_file():
         f.write(str(i + 1 + len(c_coord_x)) + ' ' + '2 ' + str(h_coord_x[i]) + ' ' + str(h_coord_y[i]) + ' ' + str(
             h_coord_z[i]) + '\n')
 
+    f.close()
 
-def create_tube(diameter, l, init_pos, angle_x, angle_y):
-    n = round(math.pi / math.sin(r / diameter))  # number of atoms in one circle
-    r2 = r / (2 * math.cos(math.pi / (2 * n)))  # auxiliary vector
-    a = [[init_pos[0]], [init_pos[1] - diameter / 2], [init_pos[2]]]
+
+def create_tube(diameter, circle_length, initial_position, angle_x, angle_y):
+    n = round(math.pi / math.sin(pmpi_input.r / diameter))  # number of atoms in one circle
+    r2 = pmpi_input.r / (2 * math.cos(math.pi / (2 * n)))  # auxiliary vector
+    tube = [[initial_position[0]], [initial_position[1] - diameter / 2], [initial_position[2]]]
+
     for i in range(n - 1):  # first loop
-        a[0].append(round(a[0][i] - r * math.cos(math.pi * (2 * i + 1) / n), 2))
-        a[1].append(round(a[1][i] + r * math.sin(math.pi * (2 * i + 1) / n), 2))
-        a[2].append(round(a[2][i]))
+        tube[0].append(round(tube[0][i] - pmpi_input.r * math.cos(math.pi * (2 * i + 1) / n), 2))
+        tube[1].append(round(tube[1][i] + pmpi_input.r * math.sin(math.pi * (2 * i + 1) / n), 2))
+        tube[2].append(round(tube[2][i]))
 
-    for k in range(int(l / tube_coeff)):  # other l loops
+    for k in range(int(circle_length / pmpi_input.tube_coeff)):  # other l loops
         if k % 4 == 2:  # (round(k%8,0) == 6) or (round(k%8,0) == 2)):
             for i in range(n):
-                a[0].append(round(a[0][n * k + i] + r2 * math.cos(-math.pi / (2 * n) + 2 * math.pi * i / n), 2))
-                a[1].append(round(a[1][n * k + i] - r2 * math.sin(-math.pi / (2 * n) + 2 * math.pi * i / n), 2))
-                a[2].append(round(a[2][n * k + i] + 0.5 * r / math.sqrt(3), 2))
+                tube[0].append(round(tube[0][n * k + i] + r2 * math.cos(-math.pi / (2 * n) + 2 * math.pi * i / n), 2))
+                tube[1].append(round(tube[1][n * k + i] - r2 * math.sin(-math.pi / (2 * n) + 2 * math.pi * i / n), 2))
+                tube[2].append(round(tube[2][n * k + i] + 0.5 * pmpi_input.r / math.sqrt(3), 2))
 
         elif k % 4 == 0:  # ((round(k%8,0) == 0) or (round(k%8,0) == 4)):
             for i in range(n):
-                a[0].append(round(a[0][n * k + i] - r2 * math.cos(-math.pi / (2 * n) + 2 * math.pi * i / n), 2))
-                a[1].append(round(a[1][n * k + i] + r2 * math.sin(-math.pi / (2 * n) + 2 * math.pi * i / n), 2))
-                a[2].append(round(a[2][n * k + i] + 0.5 * r / math.sqrt(3), 2))
+                tube[0].append(round(tube[0][n * k + i] - r2 * math.cos(-math.pi / (2 * n) + 2 * math.pi * i / n), 2))
+                tube[1].append(round(tube[1][n * k + i] + r2 * math.sin(-math.pi / (2 * n) + 2 * math.pi * i / n), 2))
+                tube[2].append(round(tube[2][n * k + i] + 0.5 * pmpi_input.r / math.sqrt(3), 2))
 
         else:  # elif((round(k%8,0) == 1) or (round(k%8,0) == 5) or (round(k%8,0) == 3) or (round(k%8,0) == 7)):
             for i in range(n):
-                a[0].append(round(a[0][n * k + i], 2))
-                a[1].append(round(a[1][n * k + i], 2))
-                a[2].append(round(a[2][n * k + i] + r / math.sqrt(3), 2))
+                tube[0].append(round(tube[0][n * k + i], 2))
+                tube[1].append(round(tube[1][n * k + i], 2))
+                tube[2].append(round(tube[2][n * k + i] + pmpi_input.r / math.sqrt(3), 2))
 
-    a_cp = [[], [], []]
+    temp_tube = [[], [], []]
 
-    a_cp[0] = a[0][:]
-    a_cp[1] = a[1][:]
-    a_cp[2] = a[2][:]
+    temp_tube[0] = tube[0][:]
+    temp_tube[1] = tube[1][:]
+    temp_tube[2] = tube[2][:]
 
-    for i in range(len(a[0])):
-        a[0][i] = a_cp[0][0] + (a_cp[0][i] - a_cp[0][0]) * math.cos(angle_x) - (a_cp[2][i] - a_cp[2][0]) * \
-                  math.sin(angle_x)
-        a[2][i] = a_cp[2][0] + (a_cp[0][i] - a_cp[0][0]) * math.sin(angle_x) + (a_cp[2][i] - a_cp[2][0]) * \
-                  math.cos(angle_x)
+    for i in range(len(tube[0])):
+        tube[0][i] = temp_tube[0][0] + (temp_tube[0][i] - temp_tube[0][0]) * math.cos(angle_x) - (
+                temp_tube[2][i] - temp_tube[2][0]) * math.sin(angle_x)
+        tube[2][i] = temp_tube[2][0] + (temp_tube[0][i] - temp_tube[0][0]) * math.sin(angle_x) + (
+                temp_tube[2][i] - temp_tube[2][0]) * math.cos(angle_x)
 
-    a_cp[0] = a[0][:]
-    a_cp[1] = a[1][:]
-    a_cp[2] = a[2][:]
+    temp_tube[0] = tube[0][:]
+    temp_tube[1] = tube[1][:]
+    temp_tube[2] = tube[2][:]
 
-    for i in range(len(a[0])):
-        a[1][i] = a_cp[1][0] + (a_cp[1][i] - a_cp[1][0]) * math.cos(angle_y) - (a_cp[2][i] - a_cp[2][0]) * \
-                  math.sin(angle_y)
-        a[2][i] = a_cp[2][0] + (a_cp[1][i] - a_cp[1][0]) * math.sin(angle_y) + (a_cp[2][i] - a_cp[2][0]) * \
-                  math.cos(angle_y)
+    for i in range(len(tube[0])):
+        tube[1][i] = temp_tube[1][0] + (temp_tube[1][i] - temp_tube[1][0]) * math.cos(angle_y) - (
+                temp_tube[2][i] - temp_tube[2][0]) * math.sin(angle_y)
+        tube[2][i] = temp_tube[2][0] + (temp_tube[1][i] - temp_tube[1][0]) * math.sin(angle_y) + (
+                temp_tube[2][i] - temp_tube[2][0]) * math.cos(angle_y)
 
-    return a
+    return tube
 
 
-def apply_tube(diameter, l, init_pos, wall_numb, angle_x, angle_y):
+def apply_tube(diameter, circle_length, initial_position, wall_number, angle_x, angle_y):
     a_out = [[], [], []]
 
-    for k in range(wall_numb):
-        a_temp = create_tube(diameter - k * dist_btw_walls, l, init_pos, angle_x, angle_y)
+    for k in range(wall_number):
+        a_temp = create_tube(diameter - k * dist_btw_walls, circle_length, initial_position, angle_x, angle_y)
         for i in range(len(a_out)):
             a_out[i].extend(a_temp[i])
 
     return a_out
 
 
-def add_tube(number, l, a, n, angle_x, angle_y):
-    tube_coord = tube.apply_tube(number, l, a, n, angle_x, angle_y)
+def add_tube(number, circle_length, initial_position, wall_number, angle_x, angle_y):
+    tube_coord = apply_tube(number, circle_length, initial_position, wall_number, angle_x, angle_y)
     c_coord_x.extend(tube_coord[0])
     c_coord_y.extend(tube_coord[1])
     c_coord_z.extend(tube_coord[2])
@@ -201,7 +208,7 @@ def main():
     global c_in_tubes
     c_in_tubes = len(c_coord_x)
 
-    for j in range(chain_numb):
+    for j in range(pmpi_input.chain_number):
         while 1:
             first_chain = Chain([
                 random.randint(-pmpi_input.box_x / 2, pmpi_input.box_x / 2),
@@ -209,10 +216,9 @@ def main():
                 random.randint(-pmpi_input.box_z / 2, pmpi_input.box_z / 2)
             ])
 
-            chain_len = 2
-            for i in range(bead_number):
+            for i in range(pmpi_input.bead_number):
                 start = time.time()
-                print(i, chain_len, j)
+                print(i, pmpi_input.chain_length, j)
 
                 while 1:
                     first_chain.generate()
@@ -221,24 +227,25 @@ def main():
                     if first_chain.check_angle() == 0 and first_chain.check_empty() == 0 and \
                             first_chain.check_border() == 0:
                         first_chain.add_bead()
-                        chain_len += 1
+                        pmpi_input.chain_length += 1
                         break
 
                 if time.time() - start > time_to_wait:
-                    for k in range(chain_len):
+                    for k in range(pmpi_input.chain_length):
                         c_coord_x.pop(-1)
                         c_coord_y.pop(-1)
                         c_coord_z.pop(-1)
                     break
 
-            if len(c_coord_x) - c_in_tubes >= bead_number * (j + 1):
+            if len(c_coord_x) - c_in_tubes >= pmpi_input.bead_number * (j + 1):
                 break
 
-    if chain_numb != 0:
+    if pmpi_input.chain_number != 0:
         first_chain.add_hydr()
 
     write_in_file()
 
 
+# Вот тут надо запускать
 if __name__ == "__main__":
     main()

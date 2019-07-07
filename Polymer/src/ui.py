@@ -4,9 +4,9 @@ import pylab
 from matplotlib import pyplot
 from mpl_toolkits.mplot3d import Axes3D
 
-from Polymer.src.PMGPSPM import h_coord_x, h_coord_y, h_coord_z
-from Polymer.src.PMPI import pmpi_input
-from Polymer.src.PVBzPB import Lammps
+from Polymer.src.input import pmpi_input
+from Polymer.src.lammps import Lammps
+from Polymer.src.main import h_coord_x, h_coord_y, h_coord_z
 
 lmp = Lammps()
 
@@ -43,6 +43,7 @@ run             %s
 ''' % args
     in_file = open(os.getcwd() + '/in.deform')
     in_file.writelines(text)
+    in_file.close()
 
 
 def plot_chain_with_args(args):
@@ -63,7 +64,6 @@ def write_in_file_with_args(args):
 
     f = open(os.getcwd() + str(bead_number) + '_' + str(chain_numb) + '.data', 'w')
 
-    # Generate head of file
     f.write('\n' + str(len(C_coord_x) + len(h_coord_x)) + ' atoms' + '\n')
     f.write('2 atom types' + '\n' + '\n')
     f.write(str(-pmpi_input.box_x / 2 - 1) + ' ' + str(pmpi_input.box_x / 2 + 1) + ' xlo xhi' + '\n')
@@ -76,3 +76,5 @@ def write_in_file_with_args(args):
     for i in range(len(h_coord_x)):
         f.write(str(i + 1 + len(C_coord_x)) + ' ' + '2 ' + str(h_coord_x[i]) + ' ' + str(h_coord_y[i]) + ' ' + str(
             h_coord_z[i]) + '\n')
+
+    f.close()
