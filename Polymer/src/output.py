@@ -1,14 +1,14 @@
 import os
 
 import pylab
-from matplotlib import pyplot
 from mpl_toolkits.mplot3d import Axes3D
 
 from Polymer.src.input import pmpi_input
-from Polymer.src.lammps import Lammps
 from Polymer.src.main import h_coord_x, h_coord_y, h_coord_z
 
-lmp = Lammps()
+
+# from input import pmpi_input
+# from main import h_coord_x, h_coord_y, h_coord_z
 
 
 def gen_in_file(args):
@@ -56,7 +56,8 @@ def plot_chain_with_args(args):
     for i2 in range(len(C_coord_x) - C_in_tubes):
         i = i2 + C_in_tubes
         ax.scatter(C_coord_x[i], C_coord_y[i], C_coord_z[i], c=color[(i2 // (bead_number + 2)) % len(color)])
-    pyplot.show()
+
+    fig.savefig('chain.png', bbox_inches='tight')
 
 
 def write_in_file_with_args(args):

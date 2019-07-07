@@ -6,6 +6,8 @@ import math
 
 from Polymer.src.input import pmpi_input
 
+# from input import pmpi_input
+
 # Какие-то глобальные переменные
 vect = 1.557  # C-C bond length
 dop_radius = 1
@@ -236,6 +238,10 @@ def main():
                         c_coord_y.pop(-1)
                         c_coord_z.pop(-1)
                     break
+
+            from Polymer.src.output import plot_chain_with_args
+            # from Polymer.src.output import plot_chain_with_args
+            plot_chain_with_args((pmpi_input.bead_number, c_in_tubes, c_coord_x, c_coord_y, c_coord_z))
 
             if len(c_coord_x) - c_in_tubes >= pmpi_input.bead_number * (j + 1):
                 break

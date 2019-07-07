@@ -38,7 +38,7 @@ default_flag = 0
 # Здесь она генерится либо по умолчанию, либо через консоль
 while True:
     key = input('\n>>>')
-    if key == 'start generation default':
+    if key == 'start generation default' or key == 'd':
         print('default values')
         default_flag = 1
         break
@@ -118,7 +118,7 @@ print('\n\nGenerated file "%s.data"' % pmpi_input.name)
 default_relax_flag = 0
 while True:
     key = input('\n>>>')
-    if key == 'start relaxation default':
+    if key == 'start relaxation default' or key == 'd':
         print('default values')
         default_relax_flag = 1
         break
@@ -178,7 +178,7 @@ print('\n\nGenerated in-file "in_relax.%s"' % pmpi_input.name)
 default_def_flag = 0
 while True:
     key = input('\n>>>')
-    if key == 'start deformation default':
+    if key == 'start deformation default' or key == 'd':
         print('default values')
         default_def_flag = 1
         break
