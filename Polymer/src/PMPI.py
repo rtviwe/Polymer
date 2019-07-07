@@ -1,5 +1,3 @@
-__author__ = 'kelsen'
-
 import os
 import sys
 
@@ -11,31 +9,32 @@ print('Python v %s' % Python_ver)
 print('Lammps library package %s' % LAMMPS_version)
 
 
-class inp:
+class Input:
+
     def __init__(self):
-        inp.name = 'default task'
-        inp.box_x = 200
-        inp.box_y = 200
-        inp.box_z = 200
-        inp.inc_type = 'nanotube'
-        inp.inc_size = 100
-        inp.inc_numb = 10
-        inp.inc_ch_length = 5000
-        inp.density = 0.8
+        self.name = 'default task'
+        self.box_x = 200
+        self.box_y = 200
+        self.box_z = 200
+        self.inc_type = 'nanotube'
+        self.inc_size = 100
+        self.inc_numb = 10
+        self.inc_ch_length = 5000
+        self.density = 0.8
 
-        inp.step_numb = 1000000
-        inp.step = 0.005
-        inp.temp = 300
-        inp.pres = 1
-        inp.cfg_step = 10000
+        self.step_numb = 1000000
+        self.step = 0.005
+        self.temp = 300
+        self.pres = 1
+        self.cfg_step = 10000
 
-        inp.def_step_numb = 1000000
-        inp.def_x = 1
-        inp.def_y = 1
-        inp.def_z = 1
+        self.def_step_numb = 1000000
+        self.def_x = 1
+        self.def_y = 1
+        self.def_z = 1
 
 
-inp()
+pmpi_input = Input()
 default_flag = 0
 
 while True:
@@ -53,8 +52,8 @@ while True:
 while True * (not default_flag):
     key = input('\nJob name =')
     try:
-        inp.name = key
-        print('Job name = %s' % inp.name)
+        Input.name = key
+        print('Job name = %s' % Input.name)
         break
     except:
         print('wrong data type')
@@ -62,10 +61,10 @@ while True * (not default_flag):
 while True * (not default_flag):
     key = input('\nCell size (x y z) =')
     try:
-        inp.box_x = float(key.split()[0])
-        inp.box_y = float(key.split()[1])
-        inp.box_z = float(key.split()[2])
-        print('%s x %s x %s Angstrom' % (str(inp.box_x), str(inp.box_y), str(inp.box_z)))
+        Input.box_x = float(key.split()[0])
+        Input.box_y = float(key.split()[1])
+        Input.box_z = float(key.split()[2])
+        print('%s x %s x %s Angstrom' % (str(Input.box_x), str(Input.box_y), str(Input.box_z)))
         break
     except:
         print('wrong data type')
@@ -73,8 +72,8 @@ while True * (not default_flag):
 while True * (not default_flag):
     key = input('\nInclusion type =')
     try:
-        inp.inc_type = key
-        print('Inclusion type: %s' % inp.inc_type)
+        Input.inc_type = key
+        print('Inclusion type: %s' % Input.inc_type)
         break
     except:
         print('wrong data type')
@@ -82,8 +81,8 @@ while True * (not default_flag):
 while True * (not default_flag):
     key = input('\nInclusion size =')
     try:
-        inp.inc_size = float(key)
-        print('Inclusion size: %s' % str(inp.inc_size))
+        Input.inc_size = float(key)
+        print('Inclusion size: %s' % str(Input.inc_size))
         break
     except:
         print('wrong data type')
@@ -91,8 +90,8 @@ while True * (not default_flag):
 while True * (not default_flag):
     key = input('\nNumber of inclusions =')
     try:
-        inp.inc_numb = int(key)
-        print('Number of inclusions: %s' % str(inp.inc_numb))
+        Input.inc_numb = int(key)
+        print('Number of inclusions: %s' % str(Input.inc_numb))
         break
     except:
         print('wrong data type')
@@ -100,8 +99,8 @@ while True * (not default_flag):
 while True * (not default_flag):
     key = input('\nPolymer chain length =')
     try:
-        inp.inc_ch_length = int(key)
-        print('Polymer chain length: %s' % str(inp.inc_ch_length))
+        Input.inc_ch_length = int(key)
+        print('Polymer chain length: %s' % str(Input.inc_ch_length))
         break
     except:
         print('wrong data type')
@@ -109,13 +108,13 @@ while True * (not default_flag):
 while True * (not default_flag):
     key = input('\nDensity =')
     try:
-        inp.density = float(key)
-        print('Density: %s g/cm3' % str(inp.density))
+        Input.density = float(key)
+        print('Density: %s g/cm3' % str(Input.density))
         break
     except:
         print('wrong data type')
 
-print('\n\nGenerated file "%s.data"' % inp.name)
+print('\n\nGenerated file "%s.data"' % Input.name)
 
 default_relax_flag = 0
 while True:
@@ -133,8 +132,8 @@ while True:
 while True * (not default_relax_flag):
     key = input('\nNumber of steps =')
     try:
-        inp.step_numb = int(key)
-        print('Number of steps: %s' % str(inp.step_numb))
+        Input.step_numb = int(key)
+        print('Number of steps: %s' % str(Input.step_numb))
         break
     except:
         print('wrong data type')
@@ -142,8 +141,8 @@ while True * (not default_relax_flag):
 while True * (not default_relax_flag):
     key = input('\nStep (ps) =')
     try:
-        inp.step = float(key)
-        print('Step:%s ps' % str(inp.step))
+        Input.step = float(key)
+        print('Step:%s ps' % str(Input.step))
         break
     except:
         print('wrong data type')
@@ -151,8 +150,8 @@ while True * (not default_relax_flag):
 while True * (not default_relax_flag):
     key = input('\nTemperature =')
     try:
-        inp.temp = float(key)
-        print('Temperature: %s' % str(inp.temp))
+        Input.temp = float(key)
+        print('Temperature: %s' % str(Input.temp))
         break
     except:
         print('wrong data type')
@@ -160,8 +159,8 @@ while True * (not default_relax_flag):
 while True * (not default_relax_flag):
     key = input('\nPressure (bar) =')
     try:
-        inp.pres = float(key)
-        print('Pressure: %s bar' % str(inp.pres))
+        Input.pres = float(key)
+        print('Pressure: %s bar' % str(Input.pres))
         break
     except:
         print('wrong data type')
@@ -169,13 +168,13 @@ while True * (not default_relax_flag):
 while True * (not default_relax_flag):
     key = input('\nGenerate cfg every X steps =')
     try:
-        inp.cfg_step = int(key)
-        print('Generate cfg every %s steps' % str(inp.cfg_step))
+        Input.cfg_step = int(key)
+        print('Generate cfg every %s steps' % str(Input.cfg_step))
         break
     except:
         print('wrong data type')
 
-print('\n\nGenerated in-file "in_relax.%s"' % inp.name)
+print('\n\nGenerated in-file "in_relax.%s"' % Input.name)
 
 default_def_flag = 0
 while True:
@@ -193,8 +192,8 @@ while True:
 while True * (not default_def_flag):
     key = input('\nNumber of steps (deformation) =')
     try:
-        inp.def_step_numb = int(key)
-        print('Number of steps: %s' % str(inp.def_step_numb))
+        Input.def_step_numb = int(key)
+        print('Number of steps: %s' % str(Input.def_step_numb))
         break
     except:
         print('wrong data type')
@@ -202,12 +201,12 @@ while True * (not default_def_flag):
 while True * (not default_def_flag):
     key = input('\nDeformation (dx dy dz) =')
     try:
-        inp.def_x = float(key.split()[0])
-        inp.def_y = float(key.split()[1])
-        inp.def_z = float(key.split()[2])
-        print('Deformation %s x %s x %s Angstrom' % (str(inp.def_x), str(inp.def_y), str(inp.def_z)))
+        Input.def_x = float(key.split()[0])
+        Input.def_y = float(key.split()[1])
+        Input.def_z = float(key.split()[2])
+        print('Deformation %s x %s x %s Angstrom' % (str(Input.def_x), str(Input.def_y), str(Input.def_z)))
         break
     except:
         print('wrong data type')
 
-print('\n\nGenerated in-file "in_deform.%s"' % inp.name)
+print('\n\nGenerated in-file "in_deform.%s"' % Input.name)

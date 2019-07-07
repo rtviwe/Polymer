@@ -4,7 +4,8 @@ import pylab
 from matplotlib import pyplot
 from mpl_toolkits.mplot3d import Axes3D
 
-from Polymer.src.PMGPSPM import H_coord_x, H_coord_y, H_coord_z, box_x, box_y, box_z
+from Polymer.src.PMGPSPM import h_coord_x, h_coord_y, h_coord_z
+from Polymer.src.PMPI import pmpi_input
 from Polymer.src.PVBzPB import Lammps
 
 lmp = Lammps()
@@ -44,7 +45,7 @@ run             %s
     in_file.writelines(text)
 
 
-def plot_chain(args):
+def plot_chain_with_args(args):
     (bead_number, C_in_tubes, C_coord_x, C_coord_y, C_coord_z) = args
     color = ['red', 'green', 'blue', 'yellow', 'black', 'pink']
     fig = pylab.figure()
@@ -57,21 +58,21 @@ def plot_chain(args):
     pyplot.show()
 
 
-def write_in_file(args):
+def write_in_file_with_args(args):
     (chain_numb, bead_number, C_in_tubes, C_coord_x, C_coord_y, C_coord_z) = args
 
     f = open(os.getcwd() + str(bead_number) + '_' + str(chain_numb) + '.data', 'w')
 
-    # GENERATE HEAD OF THE FILE
-    f.write('\n' + str(len(C_coord_x) + len(H_coord_x)) + ' atoms' + '\n')
+    # Generate head of file
+    f.write('\n' + str(len(C_coord_x) + len(h_coord_x)) + ' atoms' + '\n')
     f.write('2 atom types' + '\n' + '\n')
-    f.write(str(-box_x / 2 - 1) + ' ' + str(box_x / 2 + 1) + ' xlo xhi' + '\n')
-    f.write(str(-box_y / 2 - 1) + ' ' + str(box_y / 2 + 1) + ' ylo yhi' + '\n')
-    f.write(str(-box_z / 2 - 1) + ' ' + str(box_z / 2 + 1) + ' zlo zhi' + '\n' + '\n')
+    f.write(str(-pmpi_input.box_x / 2 - 1) + ' ' + str(pmpi_input.box_x / 2 + 1) + ' xlo xhi' + '\n')
+    f.write(str(-pmpi_input.box_y / 2 - 1) + ' ' + str(pmpi_input.box_y / 2 + 1) + ' ylo yhi' + '\n')
+    f.write(str(-pmpi_input.box_z / 2 - 1) + ' ' + str(pmpi_input.box_z / 2 + 1) + ' zlo zhi' + '\n' + '\n')
     f.write('Masses' + '\n' + '\n' + '1 12.0' + '\n' + '2 1.0' + '\n' + '\n' 'Atoms' + '\n' + '\n')
 
     for i in range(len(C_coord_x)):
         f.write(str(i + 1) + ' ' + '1 ' + str(C_coord_x[i]) + ' ' + str(C_coord_y[i]) + ' ' + str(C_coord_z[i]) + '\n')
-    for i in range(len(H_coord_x)):
-        f.write(str(i + 1 + len(C_coord_x)) + ' ' + '2 ' + str(H_coord_x[i]) + ' ' + str(H_coord_y[i]) + ' ' + str(
-            H_coord_z[i]) + '\n')
+    for i in range(len(h_coord_x)):
+        f.write(str(i + 1 + len(C_coord_x)) + ' ' + '2 ' + str(h_coord_x[i]) + ' ' + str(h_coord_y[i]) + ' ' + str(
+            h_coord_z[i]) + '\n')
