@@ -30,17 +30,18 @@ class Input:
         self.def_z = 1
 
         self.bead_number = 2000  # максимум молекул в цепочке
-        self.chain_number = 2  # количество цепочек
+        self.chain_number = 6  # количество цепочек
 
         self.r = 1  # TODO ???
         self.tube_coefficient = 0.75  # TODO ???
 
 
 # Импоритуем эту переменную всюду, где нам нужны входные данные
-pmpi_input = Input()
+polymer_input = Input()
 isDefault = False
 
 # Здесь она генерится либо по умолчанию, либо через консоль
+# TODO добавить все поля сверху на ввод
 while True:
     key = input('\n>>>')
     if key == 'start generation default' or key == 'd':
@@ -56,8 +57,8 @@ while True:
 while not isDefault:
     key = input('\nJob name =')
     try:
-        pmpi_input.name = key
-        print('Job name = %s' % pmpi_input.name)
+        polymer_input.name = key
+        print('Job name = %s' % polymer_input.name)
         break
     except:
         print('wrong data type')
@@ -65,10 +66,10 @@ while not isDefault:
 while not isDefault:
     key = input('\nCell size (x y z) =')
     try:
-        pmpi_input.box_x = float(key.split()[0])
-        pmpi_input.box_y = float(key.split()[1])
-        pmpi_input.box_z = float(key.split()[2])
-        print('%s x %s x %s Angstrom' % (str(pmpi_input.box_x), str(pmpi_input.box_y), str(pmpi_input.box_z)))
+        polymer_input.box_x = float(key.split()[0])
+        polymer_input.box_y = float(key.split()[1])
+        polymer_input.box_z = float(key.split()[2])
+        print('%s x %s x %s Angstrom' % (str(polymer_input.box_x), str(polymer_input.box_y), str(polymer_input.box_z)))
         break
     except:
         print('wrong data type')
@@ -76,8 +77,8 @@ while not isDefault:
 while not isDefault:
     key = input('\nInclusion type =')
     try:
-        pmpi_input.inclusion_type = key
-        print('Inclusion type: %s' % pmpi_input.inclusion_type)
+        polymer_input.inclusion_type = key
+        print('Inclusion type: %s' % polymer_input.inclusion_type)
         break
     except:
         print('wrong data type')
@@ -85,8 +86,8 @@ while not isDefault:
 while not isDefault:
     key = input('\nInclusion size =')
     try:
-        pmpi_input.inclusion_size = float(key)
-        print('Inclusion size: %s' % str(pmpi_input.inclusion_size))
+        polymer_input.inclusion_size = float(key)
+        print('Inclusion size: %s' % str(polymer_input.inclusion_size))
         break
     except:
         print('wrong data type')
@@ -94,8 +95,8 @@ while not isDefault:
 while not isDefault:
     key = input('\nNumber of inclusions =')
     try:
-        pmpi_input.inclusion_number = int(key)
-        print('Number of inclusions: %s' % str(pmpi_input.inclusion_number))
+        polymer_input.inclusion_number = int(key)
+        print('Number of inclusions: %s' % str(polymer_input.inclusion_number))
         break
     except:
         print('wrong data type')
@@ -103,8 +104,8 @@ while not isDefault:
 while not isDefault:
     key = input('\nPolymer chain length =')
     try:
-        pmpi_input.inclusion_chain_length = int(key)
-        print('Polymer chain length: %s' % str(pmpi_input.inclusion_chain_length))
+        polymer_input.inclusion_chain_length = int(key)
+        print('Polymer chain length: %s' % str(polymer_input.inclusion_chain_length))
         break
     except:
         print('wrong data type')
@@ -112,13 +113,13 @@ while not isDefault:
 while not isDefault:
     key = input('\nDensity =')
     try:
-        pmpi_input.density = float(key)
-        print('Density: %s g/cm3' % str(pmpi_input.density))
+        polymer_input.density = float(key)
+        print('Density: %s g/cm3' % str(polymer_input.density))
         break
     except:
         print('wrong data type')
 
-print('\n\nGenerated file "%s.data"' % pmpi_input.name)
+print('\n\nGenerated file "%s.data"' % polymer_input.name)
 
 isDefault = False
 
@@ -137,8 +138,8 @@ while True:
 while not isDefault:
     key = input('\nNumber of steps =')
     try:
-        pmpi_input.step_numb = int(key)
-        print('Number of steps: %s' % str(pmpi_input.step_numb))
+        polymer_input.step_numb = int(key)
+        print('Number of steps: %s' % str(polymer_input.step_numb))
         break
     except:
         print('wrong data type')
@@ -146,8 +147,8 @@ while not isDefault:
 while not isDefault:
     key = input('\nStep (ps) =')
     try:
-        pmpi_input.step = float(key)
-        print('Step:%s ps' % str(pmpi_input.step))
+        polymer_input.step = float(key)
+        print('Step:%s ps' % str(polymer_input.step))
         break
     except:
         print('wrong data type')
@@ -155,8 +156,8 @@ while not isDefault:
 while not isDefault:
     key = input('\nTemperature =')
     try:
-        pmpi_input.temp = float(key)
-        print('Temperature: %s' % str(pmpi_input.temp))
+        polymer_input.temp = float(key)
+        print('Temperature: %s' % str(polymer_input.temp))
         break
     except:
         print('wrong data type')
@@ -164,8 +165,8 @@ while not isDefault:
 while not isDefault:
     key = input('\nPressure (bar) =')
     try:
-        pmpi_input.pres = float(key)
-        print('Pressure: %s bar' % str(pmpi_input.pres))
+        polymer_input.pres = float(key)
+        print('Pressure: %s bar' % str(polymer_input.pres))
         break
     except:
         print('wrong data type')
@@ -173,13 +174,13 @@ while not isDefault:
 while not isDefault:
     key = input('\nGenerate cfg every X steps =')
     try:
-        pmpi_input.cfg_step = int(key)
-        print('Generate cfg every %s steps' % str(pmpi_input.cfg_step))
+        polymer_input.cfg_step = int(key)
+        print('Generate cfg every %s steps' % str(polymer_input.cfg_step))
         break
     except:
         print('wrong data type')
 
-print('\n\nGenerated in-file "in_relax.%s"' % pmpi_input.name)
+print('\n\nGenerated in-file "in_relax.%s"' % polymer_input.name)
 
 isDefault = False
 
@@ -198,8 +199,8 @@ while True:
 while not isDefault:
     key = input('\nNumber of steps (deformation) =')
     try:
-        pmpi_input.def_step_number = int(key)
-        print('Number of steps: %s' % str(pmpi_input.def_step_number))
+        polymer_input.def_step_number = int(key)
+        print('Number of steps: %s' % str(polymer_input.def_step_number))
         break
     except:
         print('wrong data type')
@@ -207,13 +208,14 @@ while not isDefault:
 while not isDefault:
     key = input('\nDeformation (dx dy dz) =')
     try:
-        pmpi_input.def_x = float(key.split()[0])
-        pmpi_input.def_y = float(key.split()[1])
-        pmpi_input.def_z = float(key.split()[2])
+        polymer_input.def_x = float(key.split()[0])
+        polymer_input.def_y = float(key.split()[1])
+        polymer_input.def_z = float(key.split()[2])
         print(
-            'Deformation %s x %s x %s Angstrom' % (str(pmpi_input.def_x), str(pmpi_input.def_y), str(pmpi_input.def_z)))
+            'Deformation %s x %s x %s Angstrom' % (
+            str(polymer_input.def_x), str(polymer_input.def_y), str(polymer_input.def_z)))
         break
     except:
         print('wrong data type')
 
-print('\n\nGenerated in-file "in_deform.%s"' % pmpi_input.name)
+print('\n\nGenerated in-file "in_deform.%s"' % polymer_input.name)
