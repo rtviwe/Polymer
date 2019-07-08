@@ -32,10 +32,7 @@ def main():
                     if time.time() - start > TIME_TO_WAIT:
                         break
 
-                    angle = True
-                    if current_chain.chain_length > 1:
-                        angle = current_chain.check_angle(bead)
-
+                    angle = current_chain.check_angle(bead)
                     neighbor = not current_chain.are_neighbors_exist(bead)
                     border = current_chain.check_border(bead)
 

@@ -13,7 +13,7 @@ DOP_RADIUS = 1  # TODO ???
 C_H_LENGTH = 0.8  # длина C-H связи
 WALL_PADDING = 10  # расстояние между цепочкой и коробкой
 C_IN_TUBES = 0  # TODO ???
-current_chain_id = 0
+current_chain_id = 0  # костыль, чтобы делать айдишники от 0 до N для цепей
 
 
 class Chain:
@@ -39,6 +39,7 @@ class Chain:
         phi: float = random.random()
         theta: float = random.random()
 
+        # TODO проверить формулу
         x: float = self.beads[-1].x + C_C_length * math.sin(2 * math.pi * theta) * math.sin(2 * math.pi * phi)
         y: float = self.beads[-1].y + C_C_length * math.sin(2 * math.pi * theta) * math.cos(2 * math.pi * phi)
         z: float = self.beads[-1].z + C_C_length * math.cos(2 * math.pi * theta)
@@ -48,7 +49,7 @@ class Chain:
     # Проверяет, можно ли поставить молекулу с таким углом к двум предыдущим
     def check_angle(self, c: Bead) -> bool:
         if self.chain_length <= 1:
-            raise Exception("not enough beads in chain to find angle")
+            return True
 
         b: Bead = self.beads[-1]
         a: Bead = self.beads[-2]
@@ -70,12 +71,12 @@ class Chain:
         else:
             return False
 
-    # Получает количество соседей для конца цепочки
+    # Получает молекул, которые задевает bead
     def get_neighbor_count(self, bead: Bead) -> int:
         neighbor_count = 0
         for i in self.beads:
             # TODO Проверить формулу
-            dist = math.sqrt(
+            dist: float = math.sqrt(
                 (bead.x - (i.x + bead.x)) ** 2 + (bead.y - (i.y + bead.y)) ** 2 + (bead.z - (i.z + bead.z)) ** 2)
 
             if dist < C_C_length + DOP_RADIUS:
@@ -92,6 +93,7 @@ class Chain:
         x = abs(abs(self.beads[-1].x) - abs(bead.x)) < polymer_input.box_x / 2
         y = abs(abs(self.beads[-1].y) - abs(bead.y)) < polymer_input.box_y / 2
         z = abs(abs(self.beads[-1].z) - abs(bead.z)) < polymer_input.box_z / 2
+
         if x and y and z:
             return True
         else:
@@ -134,7 +136,7 @@ class Chain:
 
         fig.savefig('chain.png', bbox_inches='tight')
 
-    # ADD ???
+    # TODO ???
     def add_hydrogen(self):
         pass
         # for j in range(len(self.beads)):

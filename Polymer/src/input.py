@@ -35,6 +35,10 @@ class Input:
         self.r = 1  # TODO ???
         self.tube_coefficient = 0.75  # TODO ???
 
+    # TODO переместить весь код снизу сюда
+    def request_input(self):
+        pass
+
 
 # Импоритуем эту переменную всюду, где нам нужны входные данные
 polymer_input = Input()
