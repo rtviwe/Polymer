@@ -29,8 +29,8 @@ class Input:
         self.def_y = 1
         self.def_z = 1
 
-        self.bead_number = 2000  # максимум молекул в цепочке
-        self.chain_number = 6  # количество цепочек
+        self.bead_number = 20000  # максимум молекул в цепочке
+        self.chain_number = 2  # количество цепочек
 
         self.r = 1  # TODO ???
         self.tube_coefficient = 0.75  # TODO ???

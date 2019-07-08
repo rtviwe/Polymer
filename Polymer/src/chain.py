@@ -35,6 +35,7 @@ class Chain:
         self.chain_length += 1
 
     # Создает новую молекулу
+    # TODO можно сразу генерировать в нужном месте, чтобы потом не проверять и заново генерировать
     def generate(self) -> Bead:
         phi: float = random.random()
         theta: float = random.random()
