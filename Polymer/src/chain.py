@@ -9,7 +9,7 @@ from Polymer.src.bead import Bead
 from Polymer.src.input import polymer_input
 
 C_C_length = 1.557  # длина C-C связи
-DOP_RADIUS = 1  # TODO ???
+DOP_RADIUS = 1  # дополнительный радиус, чтобы не вставлять молекулу впритык к другим
 C_H_LENGTH = 0.8  # длина C-H связи
 WALL_PADDING = 10  # расстояние между цепочкой и коробкой
 C_IN_TUBES = 0  # TODO ???
@@ -134,7 +134,8 @@ class Chain:
 
         for i2 in range(len(C_coord_x) - C_in_tubes):
             i = i2 + C_in_tubes
-            ax.scatter(C_coord_x[i], C_coord_y[i], C_coord_z[i], c=color[(i2 // (bead_number + 1)) % len(color)])
+            ax.scatter(C_coord_x[i], C_coord_y[i], C_coord_z[i], c=color[(i2 // (bead_number + 1)) % len(color)],
+                       s=polymer_input.r)
 
         fig.savefig('chain.png', bbox_inches='tight')
 

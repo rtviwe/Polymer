@@ -29,10 +29,10 @@ class Input:
         self.def_y = 1
         self.def_z = 1
 
-        self.bead_number = 20000  # максимум молекул в цепочке
+        self.bead_number = 200  # максимум молекул в цепочке
         self.chain_number = 2  # количество цепочек
 
-        self.r = 1  # TODO ???
+        self.r = 3  # радиус молекулы
         self.tube_coefficient = 0.75  # TODO ???
 
     # TODO переместить весь код снизу сюда
