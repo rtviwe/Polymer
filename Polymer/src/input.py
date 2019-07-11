@@ -10,30 +10,14 @@ class Input:
         self.box_z = 200
 
         # TODO ???
-        self.inclusion_type = 'nanotube'
-        self.inclusion_size = 100
-        self.inclusion_number = 10
-        self.inclusion_chain_length = 5000
-        self.density = 0.8
+        self.nanotube_size = 100 # размер нанотрубок, ввод пока что убрал
+        self.nanotube_number = 10 # кол-во нанотрубок,ввод пока что убрал
 
         # TODO ???
-        self.step_number = 1000000
-        self.step = 0.005
-        self.temp = 300
-        self.pres = 1
-        self.cfg_step = 10000
-
-        # TODO ???
-        self.def_step_number = 1000000
-        self.def_x = 1
-        self.def_y = 1
-        self.def_z = 1
-
-        self.bead_number = 200  # максимум молекул в цепочке
+        self.bead_number = 200 # максимум молекул в цепочке
         self.chain_number = 2  # количество цепочек
-
+        self.temp = 300  # температура
         self.r = 3  # радиус молекулы
-        self.tube_coefficient = 0.75  # TODO ???
 
     # TODO переместить весь код снизу сюда
     def request_input(self):
@@ -47,12 +31,12 @@ isDefault = False
 # Здесь она генерится либо по умолчанию, либо через консоль
 # TODO добавить все поля сверху на ввод
 while True:
-    key = input('\n>>>')
+    key = input('\nGeneral settings>>>')
     if key == 'start generation default' or key == 'd':
         print('default values')
         isDefault = True
         break
-    if key == 'start generation':
+    if key == 'start':
         print('Enter parameters:')
         break
     else:
@@ -78,85 +62,29 @@ while not isDefault:
     except:
         print('wrong data type')
 
-while not isDefault:
-    key = input('\nInclusion type =')
-    try:
-        polymer_input.inclusion_type = key
-        print('Inclusion type: %s' % polymer_input.inclusion_type)
-        break
-    except:
-        print('wrong data type')
-
-while not isDefault:
-    key = input('\nInclusion size =')
-    try:
-        polymer_input.inclusion_size = float(key)
-        print('Inclusion size: %s' % str(polymer_input.inclusion_size))
-        break
-    except:
-        print('wrong data type')
-
-while not isDefault:
-    key = input('\nNumber of inclusions =')
-    try:
-        polymer_input.inclusion_number = int(key)
-        print('Number of inclusions: %s' % str(polymer_input.inclusion_number))
-        break
-    except:
-        print('wrong data type')
-
-while not isDefault:
-    key = input('\nPolymer chain length =')
-    try:
-        polymer_input.inclusion_chain_length = int(key)
-        print('Polymer chain length: %s' % str(polymer_input.inclusion_chain_length))
-        break
-    except:
-        print('wrong data type')
-
-while not isDefault:
-    key = input('\nDensity =')
-    try:
-        polymer_input.density = float(key)
-        print('Density: %s g/cm3' % str(polymer_input.density))
-        break
-    except:
-        print('wrong data type')
-
 print('\n\nGenerated file "%s.data"' % polymer_input.name)
 
 isDefault = False
 
 while True:
-    key = input('\n>>>')
+    key = input('\nPolymer settings>>>')
     if key == 'start relaxation default' or key == 'd':
         print('default values')
         isDefault = True
         break
-    if key == 'start relaxation':
+    if key == 'start':
         print('Enter parameters:')
         break
     else:
         print('Unknown Command')
-
 while not isDefault:
-    key = input('\nNumber of steps =')
+    key = input('\nPolymer chain length =')
     try:
-        polymer_input.step_numb = int(key)
-        print('Number of steps: %s' % str(polymer_input.step_numb))
+        polymer_input.bead_number = int(key)
+        print('Polymer chain length: %s' % str(polymer_input.bead_number))
         break
     except:
         print('wrong data type')
-
-while not isDefault:
-    key = input('\nStep (ps) =')
-    try:
-        polymer_input.step = float(key)
-        print('Step:%s ps' % str(polymer_input.step))
-        break
-    except:
-        print('wrong data type')
-
 while not isDefault:
     key = input('\nTemperature =')
     try:
@@ -165,61 +93,22 @@ while not isDefault:
         break
     except:
         print('wrong data type')
-
 while not isDefault:
-    key = input('\nPressure (bar) =')
+    key = input('\nRadius =')
     try:
-        polymer_input.pres = float(key)
-        print('Pressure: %s bar' % str(polymer_input.pres))
+        polymer_input.r = float(key)
+        print('Radius: %s' % str(polymer_input.r))
         break
     except:
         print('wrong data type')
-
 while not isDefault:
-    key = input('\nGenerate cfg every X steps =')
+    key = input('\nChain number =')
     try:
-        polymer_input.cfg_step = int(key)
-        print('Generate cfg every %s steps' % str(polymer_input.cfg_step))
+        polymer_input.chain_number = int(key)
+        print('Chain number: %s' % str(polymer_input.chain_number))
         break
     except:
         print('wrong data type')
 
 print('\n\nGenerated in-file "in_relax.%s"' % polymer_input.name)
 
-isDefault = False
-
-while True:
-    key = input('\n>>>')
-    if key == 'start deformation default' or key == 'd':
-        print('default values')
-        isDefault = True
-        break
-    if key == 'start deformation':
-        print('Enter parameters:')
-        break
-    else:
-        print('Unknown Command')
-
-while not isDefault:
-    key = input('\nNumber of steps (deformation) =')
-    try:
-        polymer_input.def_step_number = int(key)
-        print('Number of steps: %s' % str(polymer_input.def_step_number))
-        break
-    except:
-        print('wrong data type')
-
-while not isDefault:
-    key = input('\nDeformation (dx dy dz) =')
-    try:
-        polymer_input.def_x = float(key.split()[0])
-        polymer_input.def_y = float(key.split()[1])
-        polymer_input.def_z = float(key.split()[2])
-        print(
-            'Deformation %s x %s x %s Angstrom' % (
-            str(polymer_input.def_x), str(polymer_input.def_y), str(polymer_input.def_z)))
-        break
-    except:
-        print('wrong data type')
-
-print('\n\nGenerated in-file "in_deform.%s"' % polymer_input.name)
