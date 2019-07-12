@@ -5,7 +5,7 @@ from src.bead import Bead
 from src.chain import Chain
 from src.input import polymer_input
 
-TIME_TO_WAIT = 1  # Сколько времени можно дать, для поиска места новой молекулы в цепочке в секундах
+TIME_TO_WAIT = 60  # Сколько времени можно дать, для поиска места новой молекулы в цепочке в секундах
 
 
 def main():
