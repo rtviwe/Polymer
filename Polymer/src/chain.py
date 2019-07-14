@@ -43,14 +43,14 @@ class Chain:
         maxLen = round(math.sqrt(round(C_C_length + 2 * polymer_input.r) ** 2 - (x - self.beads[-1].x) ** 2))
         y: float = random.randint(self.beads[-1].y - maxLen,
                                   self.beads[-1].y + maxLen)
-        kostyl = round(C_C_length + 2 * polymer_input.r) ** 2 - (x - self.beads[-1].x) ** 2 - (y - self.beads[-1].y) ** 2
+        kostyl = round(C_C_length + 2 * polymer_input.r) ** 2 - (x - self.beads[-1].x) ** 2 - (
+                y - self.beads[-1].y) ** 2
         if kostyl < 0:
             kostyl += 1
         z: float = round(math.sqrt(round(kostyl)) + self.beads[-1].z)
 
         return Bead(x, y, z)
 
-    # TODO сделать проверку соседей не только для текущей цепи, а для всех уже построенных
     # Проверяет, можно ли поставить молекулу с таким углом к двум предыдущим
 
     def check_angle(self, c: Bead) -> bool:
@@ -78,24 +78,22 @@ class Chain:
             return False
         # Получает молекул, которые задевает bead
 
-    def get_neighbor_count(self, bead: Bead) -> int:
+    def get_neighbor_count(self, bead: Bead, chains: []) -> int:
         neighbor_count = 0
-        for i in self.beads:
-            # TODO Проверить формулу
-            dist: float = math.sqrt(
-                (bead.x - (i.x + bead.x)) ** 2 + (bead.y - (i.y + bead.y)) ** 2 + (bead.z - (i.z + bead.z)) ** 2)
+        for j in chains:
+            for i in j.beads:
+                dist: float = math.sqrt(
+                    (bead.x - (i.x + bead.x)) ** 2 + (bead.y - (i.y + bead.y)) ** 2 + (bead.z - (i.z + bead.z)) ** 2)
 
-            if dist < C_C_length + DOP_RADIUS:
-                neighbor_count += 1
+                if dist < C_C_length + DOP_RADIUS:
+                    neighbor_count += 1
 
         return neighbor_count
 
-
         # Перекрывает ли молекула соседей
 
-    def are_neighbors_exist(self, bead: Bead) -> bool:
-        return self.get_neighbor_count(bead) != 0
-
+    def are_neighbors_exist(self, bead: Bead, chains: []) -> bool:
+        return self.get_neighbor_count(bead, chains) != 0
 
         # Проверяет не зашли ли за границу коробки
 
@@ -130,11 +128,9 @@ class Chain:
 
         f.close()
 
-
         # TODO переписать
 
     @staticmethod
-
     def plot_chain_with_args(args):
         (bead_number, C_in_tubes, C_coord_x, C_coord_y, C_coord_z) = args
         color = ['red', 'green', 'blue', 'yellow', 'black', 'pink']

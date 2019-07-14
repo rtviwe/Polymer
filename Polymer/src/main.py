@@ -10,9 +10,13 @@ TIME_TO_WAIT = 60  # Сколько времени можно дать, для �
 
 def main():
     chains = []
+    flag = False
 
     for j in range(polymer_input.chain_number):
         while True:
+            if flag:
+                flag = False
+                break
             current_chain = Chain([
                 Bead(
                     random.randint(-polymer_input.box_x / 2, polymer_input.box_x / 2),
@@ -23,6 +27,8 @@ def main():
             chains.append(current_chain)
 
             for i in range(polymer_input.bead_number - 1):
+                if flag:
+                    break
                 start = time.time()
                 print('молекула №', current_chain.chain_length, 'в цепочке №', j)
 
@@ -30,10 +36,11 @@ def main():
                     bead = current_chain.generate()
 
                     if time.time() - start > TIME_TO_WAIT:
+                        flag = True
                         break
 
                     angle = current_chain.check_angle(bead)
-                    neighbor = not current_chain.are_neighbors_exist(bead)
+                    neighbor = not current_chain.are_neighbors_exist(bead, chains)
                     border = current_chain.check_border(bead)
 
                     if angle and neighbor and border:
