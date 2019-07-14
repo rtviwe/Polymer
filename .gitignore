@@ -3,5 +3,4 @@ venv/
 *.pdb
 *.png
 /src/__pycache__
-__pycache__
 Polymer/__pycache__/

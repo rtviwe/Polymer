@@ -5,8 +5,8 @@ import math
 import pylab
 from mpl_toolkits.mplot3d import Axes3D
 
-from src.bead import Bead
-from src.input import polymer_input
+from Polymer.src.bead import Bead
+from Polymer.src.input import polymer_input
 
 C_C_length = 1.557  # длина C-C связи
 DOP_RADIUS = 1  # дополнительный радиус, чтобы не вставлять молекулу впритык к другим
@@ -101,7 +101,7 @@ class Chain:
         else:
             return False
 
-    # Записывает цепочку в файл *.pdb (пока что неправильно)
+    # TODO Записывает цепочку в файл *.pdb (пока что неправильно)
     def write_to_file(self):
         f = open(os.getcwd() + str(polymer_input.bead_number) + '_' + str(polymer_input.chain_number) + '.pdb', 'a')
 
@@ -138,36 +138,3 @@ class Chain:
                        s=polymer_input.r)
 
         fig.savefig('chain.png', bbox_inches='tight')
-
-    # TODO ???
-    def add_hydrogen(self):
-        pass
-        # for j in range(len(self.beads)):
-        #     i = j + C_IN_TUBES
-        #     if j % (polymer_input.bead_number + 2) != 0 and j % (polymer_input.bead_number + 2) != \
-        #             (polymer_input.bead_number + 2 - 1):
-        #         a_x = (self.beads[i + 1].x - self.beads[i].x) / C_C_length
-        #         a_y = (self.beads[i + 1].y - self.beads[i].y) / C_C_length
-        #         a_z = (self.beads[i + 1].z - self.beads[i].z) / C_C_length
-        #
-        #         b_x = (self.beads[i - 1].x - self.beads[i].x) / C_C_length
-        #         b_y = (self.beads[i - 1].y - self.beads[i].y) / C_C_length
-        #         b_z = (self.beads[i - 1].z - self.beads[i].z) / C_C_length
-        #
-        #         sin_angle = math.sqrt(1 - (a_x * b_x + a_y * b_y + a_z * b_z) ** 2)
-        #
-        #         c_x = (a_y * b_z - a_z * b_y) / sin_angle
-        #         c_y = (a_z * b_x - a_x * b_z) / sin_angle
-        #         c_z = (a_x * b_y - a_y * b_x) / sin_angle
-        #
-        #         self.hydrogen.append(Bead(
-        #             self.beads[i].x + c_x * C_H_LENGTH,
-        #             self.beads[i].y + c_y * C_H_LENGTH,
-        #             self.beads[i].z + c_z * C_H_LENGTH
-        #         ))
-        #
-        #         self.hydrogen.append(Bead(
-        #             self.beads[i].x - c_x * C_H_LENGTH,
-        #             self.beads[i].y - c_y * C_H_LENGTH,
-        #             self.beads[i].z - c_z * C_H_LENGTH
-        #         ))
