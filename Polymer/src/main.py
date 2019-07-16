@@ -1,9 +1,9 @@
 import random
 import time
 
-from src.bead import Bead
-from src.chain import Chain
-from src.input import polymer_input
+from Polymer.src.bead import Bead
+from Polymer.src.chain import Chain
+from Polymer.src.input import polymer_input
 
 TIME_TO_WAIT = 60  # Сколько времени можно дать, для поиска места новой молекулы в цепочке в секундах
 

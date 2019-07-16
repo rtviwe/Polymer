@@ -1,3 +1,6 @@
 venv/
 .idea/
 *.pdb
+*.png
+/src/__pycache__
+Polymer/__pycache__/

@@ -14,8 +14,8 @@ class Input:
         self.nanotube_number = 10 # кол-во нанотрубок,ввод пока что убрал
 
         # TODO ???
-        self.bead_number = 2000 # максимум молекул в цепочке
-        self.chain_number = 4 # количество цепочек
+        self.bead_number = 2000  # максимум молекул в цепочке
+        self.chain_number = 2  # количество цепочек
         self.temp = 300  # температура
         self.r = 0.5  # радиус молекулы
 
@@ -24,7 +24,7 @@ class Input:
         pass
 
 
-# Импоритуем эту переменную всюду, где нам нужны входные данные
+# Импоритуем эт у переменную всюду, где нам нужны входные данные
 polymer_input = Input()
 isDefault = False
 
