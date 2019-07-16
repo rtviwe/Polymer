@@ -37,18 +37,22 @@ class Chain:
     # Создает новую молекулу
     # TODO можно сразу генерировать в нужном месте, чтобы потом не проверять и заново генерировать
     def generate(self) -> Bead:
-        phi: float = random.random()
-        theta: float = random.random()
-
-        # TODO проверить формулу
-        x: float = self.beads[-1].x + C_C_length * math.sin(2 * math.pi * theta) * math.sin(2 * math.pi * phi)
-        y: float = self.beads[-1].y + C_C_length * math.sin(2 * math.pi * theta) * math.cos(2 * math.pi * phi)
-        z: float = self.beads[-1].z + C_C_length * math.cos(2 * math.pi * theta)
+        maxLen = round(C_C_length + 2 * polymer_input.r)
+        x: float = random.randint(self.beads[-1].x - maxLen,
+                                  self.beads[-1].x + maxLen)
+        maxLen = round(math.sqrt(round(C_C_length + 2 * polymer_input.r) ** 2 - (x - self.beads[-1].x) ** 2))
+        y: float = random.randint(self.beads[-1].y - maxLen,
+                                  self.beads[-1].y + maxLen)
+        kostyl = round(C_C_length + 2 * polymer_input.r) ** 2 - (x - self.beads[-1].x) ** 2 - (
+                y - self.beads[-1].y) ** 2
+        if kostyl < 0:
+            kostyl += 1
+        z: float = round(math.sqrt(round(kostyl)) + self.beads[-1].z)
 
         return Bead(x, y, z)
 
-    # TODO сделать проверку соседей не только для текущей цепи, а для всех уже построенных
     # Проверяет, можно ли поставить молекулу с таким углом к двум предыдущим
+
     def check_angle(self, c: Bead) -> bool:
         if self.chain_length <= 1:
             return True
@@ -72,25 +76,27 @@ class Chain:
             return True
         else:
             return False
+        # Получает молекул, которые задевает bead
 
-    # Получает молекул, которые задевает bead
-    def get_neighbor_count(self, bead: Bead) -> int:
+    def get_neighbor_count(self, bead: Bead, chains: []) -> int:
         neighbor_count = 0
-        for i in self.beads:
-            # TODO Проверить формулу
-            dist: float = math.sqrt(
-                (bead.x - (i.x + bead.x)) ** 2 + (bead.y - (i.y + bead.y)) ** 2 + (bead.z - (i.z + bead.z)) ** 2)
+        for j in chains:
+            for i in j.beads:
+                dist: float = math.sqrt(
+                    (bead.x - (i.x + bead.x)) ** 2 + (bead.y - (i.y + bead.y)) ** 2 + (bead.z - (i.z + bead.z)) ** 2)
 
-            if dist < C_C_length + DOP_RADIUS:
-                neighbor_count += 1
+                if dist < C_C_length + DOP_RADIUS:
+                    neighbor_count += 1
 
         return neighbor_count
 
-    # Перекрывает ли молекула соседей
-    def are_neighbors_exist(self, bead: Bead) -> bool:
-        return self.get_neighbor_count(bead) != 0
+        # Перекрывает ли молекула соседей
 
-    # Проверяет не зашли ли за границу коробки
+    def are_neighbors_exist(self, bead: Bead, chains: []) -> bool:
+        return self.get_neighbor_count(bead, chains) != 0
+
+        # Проверяет не зашли ли за границу коробки
+
     def check_border(self, bead: Bead) -> bool:
         x = abs(abs(self.beads[-1].x) - abs(bead.x)) < polymer_input.box_x / 2
         y = abs(abs(self.beads[-1].y) - abs(bead.y)) < polymer_input.box_y / 2
@@ -101,7 +107,8 @@ class Chain:
         else:
             return False
 
-    # TODO Записывает цепочку в файл *.pdb (пока что неправильно)
+
+            # Записывает цепочку в файл *.pdb (пока что неправильно)
     def write_to_file(self):
         f = open(os.getcwd() + str(polymer_input.bead_number) + '_' + str(polymer_input.chain_number) + '.pdb', 'a')
 
@@ -121,7 +128,8 @@ class Chain:
 
         f.close()
 
-    # TODO переписать
+        # TODO переписать
+
     @staticmethod
     def plot_chain_with_args(args):
         (bead_number, C_in_tubes, C_coord_x, C_coord_y, C_coord_z) = args
