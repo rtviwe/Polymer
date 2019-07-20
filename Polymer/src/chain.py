@@ -15,6 +15,7 @@ WALL_PADDING = 10  # расстояние между цепочкой и кор�
 C_IN_TUBES = 0  # TODO ???
 current_chain_id = 0  # костыль, чтобы делать айдишники от 0 до N для цепей
 
+
 class Chain:
     color = ['red', 'green', 'blue', 'yellow', 'black', 'pink']
 
@@ -105,19 +106,35 @@ class Chain:
     def write_to_file(self, index : int):
         f = open(os.getcwd() + str(polymer_input.bead_number) + '_' + str(polymer_input.chain_number) + '.pdb', 'a')
 
-        # f.write('\n' + str(self.chain_length + len(self.hydrogen)) + ' atoms' + '\n')
-        # f.write('2 atom types' + '\n' + '\n')
-        # f.write(str(-polymer_input.box_x / 2 - 1) + ' ' + str(polymer_input.box_x / 2 + 1) + ' xlo xhi' + '\n')
-        # f.write(str(-polymer_input.box_y / 2 - 1) + ' ' + str(polymer_input.box_y / 2 + 1) + ' ylo yhi' + '\n')
-        # f.write(str(-polymer_input.box_z / 2 - 1) + ' ' + str(polymer_input.box_z / 2 + 1) + ' zlo zhi' + '\n' + '\n')
-        # f.write('Masses' + '\n' + '\n' + '1 12.0' + '\n' + '2 1.0' + '\n' + '\n' 'Atoms' + '\n' + '\n')
+        f.write('\n' + str(self.chain_length + len(self.hydrogen)) + ' atoms' + '\n')
+        f.write('2 atom types' + '\n' + '\n')
+        f.write(str(-polymer_input.box_x / 2 - 1) + ' ' + str(polymer_input.box_x / 2 + 1) + ' xlo xhi' + '\n')
+        f.write(str(-polymer_input.box_y / 2 - 1) + ' ' + str(polymer_input.box_y / 2 + 1) + ' ylo yhi' + '\n')
+        f.write(str(-polymer_input.box_z / 2 - 1) + ' ' + str(polymer_input.box_z / 2 + 1) + ' zlo zhi' + '\n' + '\n')
+        f.write('Masses' + '\n' + '\n' + '1 12.0' + '\n' + '2 1.0' + '\n' + '\n' 'Atoms' + '\n' + '\n')
 
-        #1-вид атома 2-номер 3,11-название 4-? 5-количество связей? 6-x координата 7-y координата 8-z координата 9,10-?
         for i in range(self.chain_length):
-            f.write('HETATM  '+str(i + 1+ index * polymer_input.bead_number) + '  C  UNL  2 '
-                + str("{0:.3f}".format(self.beads[i].x))+ ' ' + str("{0:.3f}".format(self.beads[i].y))
-                + ' ' + str("{0:.3f}".format(self.beads[i].z))
-                +'  1.00  0.00  C'+ '\n')
+            X=str("{0:.3f}".format(self.beads[i].x))
+            Y=str("{0:.3f}".format(self.beads[i].y))
+            Z=str("{0:.3f}".format(self.beads[i].z))
+            X=' '*(7-X.find("."))+X
+            Y=' '*(3-Y.find("."))+Y
+            Z=' '*(3-Z.find("."))+Z
+            if i + index * polymer_input.bead_number < 9:
+                f.write('HETATM    '+str(i + 1+ index * polymer_input.bead_number) + '  C   UNL     1 '
+                + X + ' ' + Y + ' ' + Z +'  1.00  0.00           C'+ '\n')
+
+            elif i + index * polymer_input.bead_number < 99:
+                f.write('HETATM   '+str(i + 1+ index * polymer_input.bead_number) + '  C   UNL     1 '
+                + X + ' ' + Y + ' ' + Z +'  1.00  0.00           C'+ '\n')
+
+            elif i + index * polymer_input.bead_number < 999:
+                f.write('HETATM  '+str(i + 1+ index * polymer_input.bead_number) + '  C   UNL     1 '
+                + X + ' ' + Y + ' ' + Z +'  1.00  0.00           C'+ '\n')
+
+            else:
+                f.write('HETATM '+str(i + 1+ index * polymer_input.bead_number) + '  C   UNL     1 '
+                + X + ' ' + Y + ' ' + Z +'  1.00  0.00           C'+ '\n')
 
         for i in range(len(self.hydrogen)):
             f.write(str(i + 1 + self.chain_length) + ' ' + '2 ' + str(self.hydrogen[i].x) + ' ' + str(
@@ -126,16 +143,19 @@ class Chain:
         #связи атомов по номерам
         if index+1 == polymer_input.chain_number:
             for j in range(index+1):
-                f.write('CONECT ')
+                f.write('CONECT'+' '*(5-len(str(1+ j * polymer_input.bead_number))))
                 for i in range(self.chain_length):
-                    f.write(str(i + 1+ j * polymer_input.bead_number)+' ')
-                f.write('\nCONECT ')
+                    f.write(str(i + 1+ j * polymer_input.bead_number)+' '*(5-len(str(i + 2+ j * polymer_input.bead_number))))
+
+                f.write('\nCONECT'+' '*(5-len(str(i + 1+ j * polymer_input.bead_number))))
                 for i in range(self.chain_length):
-                    f.write(str(-i + (j+1) * polymer_input.bead_number) + ' ')
+                    f.write(str(-i + (j+1) * polymer_input.bead_number)+' '*(5-len(str(-i - 1+ (j+1) * polymer_input.bead_number))))
+
                 f.write('\n')
             f.write('END')
 
         f.close()
+
 
     # TODO переписать
     @staticmethod
