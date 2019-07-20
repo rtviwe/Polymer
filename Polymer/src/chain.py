@@ -5,8 +5,8 @@ import math
 import pylab
 from mpl_toolkits.mplot3d import Axes3D
 
-from src.bead import Bead
-from src.input import polymer_input
+from Polymer.src.bead import Bead
+from Polymer.src.input import polymer_input
 
 C_C_length = 1.557  # длина C-C связи
 DOP_RADIUS = 1  # дополнительный радиус, чтобы не вставлять молекулу впритык к другим
