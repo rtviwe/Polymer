@@ -9,13 +9,12 @@ class Input:
         self.box_y = 200
         self.box_z = 200
 
-        # TODO ???
-        self.nanotube_size = 100 # размер нанотрубок, ввод пока что убрал
-        self.nanotube_number = 10 # кол-во нанотрубок,ввод пока что убрал
+        # TODO add to input
+        self.nanotube_size = 100  # размер нанотрубок
+        self.nanotube_number = 10  # количество нанотрубок
 
-        # TODO ???
         self.bead_number = 200  # максимум молекул в цепочке
-        self.chain_number = 2  # количество цепочек
+        self.chain_number = 4  # количество цепочек
         self.temp = 300  # температура
         self.r = 0.5  # радиус молекулы
 
@@ -24,12 +23,12 @@ class Input:
         pass
 
 
-# Импоритуем эт у переменную всюду, где нам нужны входные данные
+# Глобальная переменная со всеми входными данными
 polymer_input = Input()
 isDefault = False
 
 # Здесь она генерится либо по умолчанию, либо через консоль
-# TODO добавить все поля сверху на ввод
+# TODO добавить ввод данных в request_input
 while True:
     key = input('\nGeneral settings>>>')
     if key == 'start generation default' or key == 'd':
