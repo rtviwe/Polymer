@@ -2,20 +2,21 @@ import os
 import random
 
 import math
+import pylab
+from mpl_toolkits.mplot3d import Axes3D
 
 from Polymer.src.bead import Bead
 from Polymer.src.input import polymer_input
 
-C_C_length = 1.557  # длина C-C связи
-DOP_RADIUS = 1  # дополнительный радиус, чтобы не вставлять молекулу впритык к другим
-C_H_LENGTH = 0.8  # длина C-H связи
+BEAD_DISTANCE = 1.557  # длина связи между молекулами
+ADDITIONAL_RADIUS = 1  # дополнительный радиус, чтобы не ставить молекулы впритык к другим
 WALL_PADDING = 10  # расстояние между цепочкой и коробкой
 C_IN_TUBES = 0  # TODO ???
 current_chain_id = 0  # костыль, чтобы делать айдишники от 0 до N для цепей
 
 
 class Chain:
-    color = ['red', 'green', 'blue', 'yellow', 'black', 'pink']
+    color = ['red', 'green', 'blue', 'yellow', 'black', 'pink']  # набор всех цветов для рисования в png
 
     # Конструктор
     def __init__(self, beads: [Bead]):
@@ -35,17 +36,20 @@ class Chain:
     # Создает новую молекулу
     # TODO можно сразу генерировать в нужном месте, чтобы потом не проверять и заново генерировать
     def generate(self) -> Bead:
-        max_len_x = round(C_C_length + 2 * polymer_input.r)
+        max_len_x = round(BEAD_DISTANCE + 2 * polymer_input.r)
         x: float = random.randint(self.beads[-1].x - max_len_x,
                                   self.beads[-1].x + max_len_x)
-        max_len_y = round(math.sqrt(round(C_C_length + 2 * polymer_input.r) ** 2 - (x - self.beads[-1].x) ** 2))
+
+        max_len_y = round(math.sqrt(round(BEAD_DISTANCE + 2 * polymer_input.r) ** 2 - (x - self.beads[-1].x) ** 2))
         y: float = random.randint(self.beads[-1].y - max_len_y,
                                   self.beads[-1].y + max_len_y)
-        kostyl = round(C_C_length + 2 * polymer_input.r) ** 2 - (x - self.beads[-1].x) ** 2 - (
+
+        mediate_value = round(BEAD_DISTANCE + 2 * polymer_input.r) ** 2 - (x - self.beads[-1].x) ** 2 - (
                 y - self.beads[-1].y) ** 2
-        if kostyl < 0:
-            kostyl += 1
-        z: float = round(math.sqrt(round(kostyl)) + self.beads[-1].z)
+        if mediate_value < 0:
+            mediate_value += 1
+
+        z: float = round(math.sqrt(round(mediate_value)) + self.beads[-1].z)
 
         return Bead(x, y, z)
 
@@ -74,7 +78,6 @@ class Chain:
         else:
             return False
 
-
     # Получает молекул, которые задевает bead
     def get_neighbor_count(self, bead: Bead, chains: []) -> int:
         neighbor_count = 0
@@ -83,18 +86,16 @@ class Chain:
                 dist: float = math.sqrt(
                     (bead.x - (i.x + bead.x)) ** 2 + (bead.y - (i.y + bead.y)) ** 2 + (bead.z - (i.z + bead.z)) ** 2)
 
-                if dist < C_C_length + DOP_RADIUS:
+                if dist < BEAD_DISTANCE + ADDITIONAL_RADIUS:
                     neighbor_count += 1
 
         return neighbor_count
 
-        # Перекрывает ли молекула соседей
-
+    # Перекрывает ли молекула соседей
     def are_neighbors_exist(self, bead: Bead, chains: []) -> bool:
         return self.get_neighbor_count(bead, chains) != 0
 
-        # Проверяет не зашли ли за границу коробки
-
+    # Проверяет, не зашли ли за границу коробки
     def check_border(self, bead: Bead) -> bool:
         x = abs(abs(self.beads[-1].x) - abs(bead.x)) < polymer_input.box_x / 2
         y = abs(abs(self.beads[-1].y) - abs(bead.y)) < polymer_input.box_y / 2
@@ -105,22 +106,12 @@ class Chain:
         else:
             return False
 
-
-    # Записывает цепочку в файл *.pdb (пока что неправильно(первые 9 почему-то синие, потом первая сотня почему-то чёрная))
-    # составленно, в соответсвии с генерацией Avogadro
+    # Записывает цепочку в файл *.pdb в соответсвии с генерацией Avogadro
+    # TODO пока что неправильно(первые 9 почему-то синие, потом первая сотня почему-то чёрная)
     def write_to_file(self, index: int):
         f = open(os.getcwd() + str(polymer_input.bead_number) + '_' + str(polymer_input.chain_number) + '.pdb',
                  'a')
 
-        # f.write('\n' + str(self.chain_length + len(self.hydrogen)) + ' atoms' + '\n')
-        # f.write('2 atom types' + '\n' + '\n')
-        # f.write(str(-polymer_input.box_x / 2 - 1) + ' ' + str(polymer_input.box_x / 2 + 1) + ' xlo xhi' + '\n')
-        # f.write(str(-polymer_input.box_y / 2 - 1) + ' ' + str(polymer_input.box_y / 2 + 1) + ' ylo yhi' + '\n')
-        # f.write(str(-polymer_input.box_z / 2 - 1) + ' ' + str(polymer_input.box_z / 2 + 1) + ' zlo zhi' + '\n' + '\n')
-        # f.write('Masses' + '\n' + '\n' + '1 12.0' + '\n' + '2 1.0' + '\n' + '\n' 'Atoms' + '\n' + '\n')
-        X = ''
-        Y = ''
-        Z = ''
         # 1-вид атома 2-номер 3,11-название 4-? 5-количество связей? 6-x координата 7-y координата 8-z координата 9,10-?
         for i in range(self.chain_length):
             X = str("{0:.3f}".format(self.beads[i].x))
@@ -167,5 +158,17 @@ class Chain:
 
         f.close()
 
+    @staticmethod
+    def plot_chains(chains):
+        color = ['red', 'green', 'blue', 'yellow', 'black', 'pink']
+        fig = pylab.figure()
+        ax = Axes3D(fig)
 
+        color_index = -1
 
+        for i in chains:
+            color_index += 1
+            for j in i.beads:
+                ax.scatter(j.x, j.y, j.z, c=color[i.id % len(color)], s=polymer_input.r)
+
+        fig.savefig('chain.png', bbox_inches='tight')
