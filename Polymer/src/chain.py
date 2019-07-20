@@ -2,8 +2,6 @@ import os
 import random
 
 import math
-import pylab
-from mpl_toolkits.mplot3d import Axes3D
 
 from Polymer.src.bead import Bead
 from Polymer.src.input import polymer_input
@@ -37,12 +35,12 @@ class Chain:
     # Создает новую молекулу
     # TODO можно сразу генерировать в нужном месте, чтобы потом не проверять и заново генерировать
     def generate(self) -> Bead:
-        maxLen = round(C_C_length + 2 * polymer_input.r)
-        x: float = random.randint(self.beads[-1].x - maxLen,
-                                  self.beads[-1].x + maxLen)
-        maxLen = round(math.sqrt(round(C_C_length + 2 * polymer_input.r) ** 2 - (x - self.beads[-1].x) ** 2))
-        y: float = random.randint(self.beads[-1].y - maxLen,
-                                  self.beads[-1].y + maxLen)
+        max_len_x = round(C_C_length + 2 * polymer_input.r)
+        x: float = random.randint(self.beads[-1].x - max_len_x,
+                                  self.beads[-1].x + max_len_x)
+        max_len_y = round(math.sqrt(round(C_C_length + 2 * polymer_input.r) ** 2 - (x - self.beads[-1].x) ** 2))
+        y: float = random.randint(self.beads[-1].y - max_len_y,
+                                  self.beads[-1].y + max_len_y)
         kostyl = round(C_C_length + 2 * polymer_input.r) ** 2 - (x - self.beads[-1].x) ** 2 - (
                 y - self.beads[-1].y) ** 2
         if kostyl < 0:
@@ -52,7 +50,6 @@ class Chain:
         return Bead(x, y, z)
 
     # Проверяет, можно ли поставить молекулу с таким углом к двум предыдущим
-
     def check_angle(self, c: Bead) -> bool:
         if self.chain_length <= 1:
             return True
@@ -76,8 +73,9 @@ class Chain:
             return True
         else:
             return False
-        # Получает молекул, которые задевает bead
 
+
+    # Получает молекул, которые задевает bead
     def get_neighbor_count(self, bead: Bead, chains: []) -> int:
         neighbor_count = 0
         for j in chains:
@@ -170,19 +168,4 @@ class Chain:
         f.close()
 
 
-@staticmethod
-def plot_chain_with_args(args):
-    (bead_number, C_in_tubes, C_coord_x, C_coord_y, C_coord_z) = args
-    color = ['red', 'green', 'blue', 'yellow', 'black', 'pink']
-    fig = pylab.figure()
-    ax = Axes3D(fig)
 
-    for i in range(C_in_tubes):
-        ax.scatter(C_coord_x[i], C_coord_y[i], C_coord_z[i], c='black')
-
-    for i2 in range(len(C_coord_x) - C_in_tubes):
-        i = i2 + C_in_tubes
-        ax.scatter(C_coord_x[i], C_coord_y[i], C_coord_z[i], c=color[(i2 // (bead_number + 1)) % len(color)],
-                   s=polymer_input.r)
-
-    fig.savefig('chain.png', bbox_inches='tight')

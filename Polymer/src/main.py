@@ -5,6 +5,9 @@ from Polymer.src.bead import Bead
 from Polymer.src.chain import Chain
 from Polymer.src.input import polymer_input
 
+import pylab
+from mpl_toolkits.mplot3d import Axes3D
+
 TIME_TO_WAIT = 60  # Сколько времени можно дать, для поиска места новой молекулы в цепочке в секундах
 
 
@@ -60,14 +63,34 @@ def main():
 
         for i in chain.beads:
             xs.append(i.x)
-
-        for i in chain.beads:
             ys.append(i.y)
-
-        for i in chain.beads:
             zs.append(i.z)
 
-    Chain.plot_chain_with_args((polymer_input.bead_number, 0, xs, ys, zs))
+    # Chain.plot_chain_with_args((polymer_input.bead_number, 0, xs, ys, zs))
+    plot_chain_with_args(chains)
+
+
+def plot_chain_with_args(chains: [Chain]):
+    color = ['red', 'green', 'blue', 'yellow', 'black', 'pink']
+    fig = pylab.figure()
+    ax = Axes3D(fig)
+
+    color_index = -1
+
+    for i in chains:
+        color_index += 1
+        for j in i.beads:
+            ax.scatter(j.x, j.y, j.z, c=color[i.id % len(color)], s=polymer_input.r)
+
+    # for i in range(C_in_tubes):
+    #     ax.scatter(C_coord_x[i], C_coord_y[i], C_coord_z[i], c='black')
+    #
+    # for i2 in range(len(C_coord_x) - C_in_tubes):
+    #     i = i2 + C_in_tubes
+    #     ax.scatter(C_coord_x[i], C_coord_y[i], C_coord_z[i], c=color[(i2 // (bead_number + 1)) % len(color)],
+    #                s=polymer_input.r)
+
+    fig.savefig('chain.png', bbox_inches='tight')
 
 
 # Вот тут надо запускать
