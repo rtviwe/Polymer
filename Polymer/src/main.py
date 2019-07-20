@@ -48,8 +48,8 @@ def main():
     ys = []
     zs = []
 
-    for chain in chains:
-        chain.write_to_file()
+    for index, chain in enumerate(chains):
+        chain.write_to_file(index)
 
         for i in chain.beads:
             xs.append(i.x)
