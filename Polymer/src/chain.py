@@ -152,8 +152,8 @@ class Chain:
                         j * polymer_input.bead_number
                         + 3 + i) + '\t' + str(j * polymer_input.bead_number + 1 + i) + '\n')
 
-                f.write('CONECT\t' + str(j * polymer_input.bead_number + polymer_input.bead_number - 1) + '\t'
-                        + str(j * polymer_input.bead_number + polymer_input.bead_number) + '\n')
+                f.write('CONECT\t' + str(j * polymer_input.bead_number + polymer_input.bead_number) + '\t'
+                        + str(j * polymer_input.bead_number + polymer_input.bead_number - 1) + '\n')
 
             f.write('END')
 
