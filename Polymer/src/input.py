@@ -14,7 +14,7 @@ class Input:
         self.nanotube_number = 10  # количество нанотрубок
 
         self.bead_number = 200  # максимум молекул в цепочке
-        self.chain_number = 2  # количество цепочек
+        self.chain_number = 4  # количество цепочек
         self.temp = 300  # температура
         self.r = 0.5  # радиус молекулы
 

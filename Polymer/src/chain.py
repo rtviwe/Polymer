@@ -16,7 +16,7 @@ current_chain_id = 0  # костыль, чтобы делать айдишник
 
 
 class Chain:
-    color = ['red', 'green', 'blue', 'yellow', 'black', 'pink']
+    color = ['red', 'green', 'blue', 'yellow', 'black', 'pink']  # набор всех цветов для рисования в png
 
     # Конструктор
     def __init__(self, beads: [Bead]):
