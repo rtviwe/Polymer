@@ -5,8 +5,8 @@ import math
 import pylab
 from mpl_toolkits.mplot3d import Axes3D
 
-from Polymer.src.bead import Bead
-from Polymer.src.input import polymer_input
+from src.bead import Bead
+from src.input import polymer_input
 
 BEAD_DISTANCE = 1.557  # длина связи между молекулами
 ADDITIONAL_RADIUS = 1  # дополнительный радиус, чтобы не ставить молекулы впритык к другим
@@ -53,6 +53,7 @@ class Chain:
 
         return Bead(x, y, z)
 
+    # TODO сделать проверку соседей не только для текущей цепи, а для всех уже построенных
     # Проверяет, можно ли поставить молекулу с таким углом к двум предыдущим
     def check_angle(self, c: Bead) -> bool:
         if self.chain_length <= 1:
@@ -114,9 +115,9 @@ class Chain:
 
         # 1-вид атома 2-номер 3,11-название 4-? 5-количество связей? 6-x координата 7-y координата 8-z координата 9,10-?
         for i in range(self.chain_length):
-            X = str("{0:.3f}".format(self.beads[i].x))
-            Y = str("{0:.3f}".format(self.beads[i].y))
-            Z = str("{0:.3f}".format(self.beads[i].z))
+            X = "{0:.3f}".format(200 + self.beads[i].x)
+            Y = "{0:.3f}".format(200 + self.beads[i].y)
+            Z = "{0:.3f}".format(200 + self.beads[i].z)
             X = ' ' * (7 - X.find(".")) + X
             Y = ' ' * (3 - Y.find(".")) + Y
             Z = ' ' * (3 - Z.find(".")) + Z
@@ -143,17 +144,17 @@ class Chain:
         # связи атомов по номерам
         if index + 1 == polymer_input.chain_number:
             for j in range(index + 1):
-                f.write('CONECT' + ' ' * (5 - len(str(1 + j * polymer_input.bead_number))))
-                for i in range(self.chain_length):
-                    f.write(str(i + 1 + j * polymer_input.bead_number) + ' ' * (
-                            5 - len(str(i + 2 + j * polymer_input.bead_number))))
+                f.write('CONECT\t' + str(j * polymer_input.bead_number + 1) + '\t' + str(
+                    j * polymer_input.bead_number + 2) + '\n')
 
-                f.write('\nCONECT' + ' ' * (5 - len(str(i + 1 + j * polymer_input.bead_number))))
-                for i in range(self.chain_length):
-                    f.write(str(-i + (j + 1) * polymer_input.bead_number) + ' ' * (
-                            5 - len(str(-i - 1 + (j + 1) * polymer_input.bead_number))))
+                for i in range(polymer_input.bead_number - 2):
+                    f.write('CONECT\t' + str(j * polymer_input.bead_number + 2 + i) + '\t' + str(
+                        j * polymer_input.bead_number
+                        + 3 + i) + '\t' + str(j * polymer_input.bead_number + 1 + i) + '\n')
 
-                f.write('\n')
+                f.write('CONECT\t' + str(j * polymer_input.bead_number + polymer_input.bead_number) + '\t'
+                        + str(j * polymer_input.bead_number + polymer_input.bead_number - 1) + '\n')
+
             f.write('END')
 
         f.close()
