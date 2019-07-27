@@ -11,8 +11,7 @@ from src.input import polymer_input
 BEAD_DISTANCE = 1.557  # длина связи между молекулами
 ADDITIONAL_RADIUS = 1  # дополнительный радиус, чтобы не ставить молекулы впритык к другим
 WALL_PADDING = 10  # расстояние между цепочкой и коробкой
-C_IN_TUBES = 0  # TODO ???
-current_chain_id = 0  # костыль, чтобы делать айдишники от 0 до N для цепей
+current_chain_id = 0  # переменная, чтобы делать айдишники от 0 до N для цепей
 
 
 class Chain:
@@ -34,7 +33,6 @@ class Chain:
         self.chain_length += 1
 
     # Создает новую молекулу
-    # TODO можно сразу генерировать в нужном месте, чтобы потом не проверять и заново генерировать
     def generate(self) -> Bead:
         max_len_x = round(BEAD_DISTANCE + 2 * polymer_input.r)
         x: float = random.randint(self.beads[-1].x - max_len_x,
@@ -108,7 +106,6 @@ class Chain:
             return False
 
     # Записывает цепочку в файл *.pdb в соответсвии с генерацией Avogadro
-    # TODO пока что неправильно(первые 9 почему-то синие, потом первая сотня почему-то чёрная)
     def write_to_file(self, index: int):
         f = open(os.getcwd() + str(polymer_input.bead_number) + '_' + str(polymer_input.chain_number) + '.pdb',
                  'a')
