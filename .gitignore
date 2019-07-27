@@ -2,5 +2,5 @@ venv/
 .idea/
 *.pdb
 *.png
-/src/__pycache__
 Polymer/__pycache__/
+Polymer/src/__pycache__/
